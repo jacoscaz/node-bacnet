@@ -1,7 +1,6 @@
 'use strict';
 
-import * as clientModule from './lib/client';
-import * as enumModule from './lib/enum';
+import Client from './lib/client';
+export * as enum from './lib/enum';
 
-export default clientModule;
-export const enumValues = enumModule;
+export default Client;
