@@ -20,11 +20,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-          cache: 'yarn'
-      - run: yarn --frozen-lockfile
-      - run: yarn lint
-      - run: yarn test
-      # TODO: deploy coverage results
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run lint
+     # - run: npm run test
+     # TODO: deploy coverage results
      # - run: yarn integration
      # - run: yarn docs
 
