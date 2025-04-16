@@ -33,7 +33,6 @@ export default defineConfig([globalIgnores(["examples/", "dist/", "**/*.js"]), {
 
         parserOptions: {
             project: ["./tsconfig.json"],
-            tsconfigRootDir: "/home/daniel/GitProjects/node-bacnet",
         },
     },
 
