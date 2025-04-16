@@ -48,16 +48,15 @@
     "url": "git+https://github.com/innovation-system/node-bacnet.git"
   },
   "keywords": [
-    "plus4nodered",
     "bacnet",
     "bacstack",
     "building",
     "automation"
   ],
   "author": {
-    "name": "PLUS for Node-RED",
-    "email": "developers@plus4nodered.com",
-    "url": "http://plus4nodered.com"
+    "name": "Innovation-System",
+    "email": "daniel@innovaiton-system.it",
+    "url": "http://innovation-system.it"
   },
   "contributors": [
     {
@@ -67,6 +66,14 @@
     {
       "name": "Klaus Landsdorf",
       "email": "klaus@bianco-royal.de"
+    },
+    {
+      "name": "Daniel Lando",
+      "email": "daniel.sorridi@gmail.com"
+    },
+    {
+      "name": "Andrea Zanetti",
+      "email": "zanetti.sw@gmail.com"
     }
   ],
   "engines": {
