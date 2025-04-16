@@ -24,7 +24,7 @@
     },
     "git": {
       "tagName": "v${version}",
-      "requireBranch": "main",
+      "requireBranch": "master",
       "commitMessage": "chore(release): ${version}"
     },
     "hooks": {
