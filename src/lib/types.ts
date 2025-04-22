@@ -7,12 +7,32 @@ export interface BACNetAddress {
 	type?: number
 	net?: number
 	adr?: number[]
+	address?: string
+	forwardedFrom?: string
+}
+
+export interface ReceiverAddress {
+	address: string
+	forwardedFrom?: string
+}
+
+export type AddressParameter = string | ReceiverAddress
+
+export interface PropertyReference {
+	id: number
+	index: number
+}
+
+export interface TypedValue {
+	type: number
+	value: any
 }
 
 export interface TransportSettings {
 	port?: number
 	interface?: string
 	broadcastAddress?: string
+	reuseAddr?: boolean
 }
 
 export interface BACNetObjectID {
@@ -246,6 +266,7 @@ export interface BvlcPacket {
 	len: number
 	func: number
 	msgLength: number
+	originatingIP?: string
 }
 
 export interface ClientOptions {
@@ -254,6 +275,7 @@ export interface ClientOptions {
 	transport?: any
 	broadcastAddress?: string
 	apduTimeout?: number
+	reuseAddr?: boolean
 }
 
 export interface WhoIsOptions {
@@ -352,3 +374,65 @@ export interface DeviceCommunicationOptions extends ServiceOptions {
 export interface ReinitializeDeviceOptions extends ServiceOptions {
 	password?: string
 }
+
+export interface BACnetMessageHeader {
+	apduType: number
+	expectingReply: boolean
+	sender: {
+		address: string
+		forwardedFrom: string | null
+	}
+	func?: number
+	confirmedService?: boolean
+}
+
+// Interfacce base che rappresentano capacità
+export interface BACnetMessageBase {
+	len: number
+	type?: number
+	header?: BACnetMessageHeader
+	payload?: any
+}
+
+export interface HasService {
+	service: number
+}
+
+export interface HasInvokeId {
+	invokeId: number
+}
+
+export interface HasOriginalInvokeId {
+	originalInvokeId: number
+}
+
+export interface IsSegmentable {
+	sequencenumber: number
+	proposedWindowNumber: number
+}
+
+export type ServiceMessage = BACnetMessageBase & HasService
+export type InvokeMessage = BACnetMessageBase & HasInvokeId
+export type SegmentableMessage = InvokeMessage & IsSegmentable
+
+export type UnconfirmedServiceRequestMessage = UnconfirmedServiceRequest &
+	ServiceMessage
+export type ConfirmedServiceRequestMessage = ConfirmedServiceRequest &
+	ServiceMessage &
+	SegmentableMessage
+export type SimpleAckMessage = SimpleAck & InvokeMessage & HasService
+export type ComplexAckMessage = ComplexAck & ServiceMessage & SegmentableMessage
+export type SegmentAckMessage = SegmentAck &
+	BACnetMessageBase &
+	HasOriginalInvokeId
+export type BACnetErrorMessage = BACnetError & ServiceMessage & InvokeMessage
+export type AbortMessage = Abort & InvokeMessage
+
+export type BACnetMessage =
+	| UnconfirmedServiceRequestMessage
+	| ConfirmedServiceRequestMessage
+	| SimpleAckMessage
+	| ComplexAckMessage
+	| SegmentAckMessage
+	| BACnetErrorMessage
+	| AbortMessage

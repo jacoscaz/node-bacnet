@@ -1,3 +1,4 @@
+import * as baAsn1 from './asn1'
 import * as baEnum from './enum'
 import {
 	EncodeBuffer,
@@ -28,13 +29,13 @@ export const getDecodedInvokeId = (
 ): number | undefined => {
 	const type = getDecodedType(buffer, offset)
 	switch (type & baEnum.PDU_TYPE_MASK) {
-		case baEnum.PduTypes.SIMPLE_ACK:
-		case baEnum.PduTypes.COMPLEX_ACK:
-		case baEnum.PduTypes.ERROR:
-		case baEnum.PduTypes.REJECT:
-		case baEnum.PduTypes.ABORT:
+		case baEnum.PduType.SIMPLE_ACK:
+		case baEnum.PduType.COMPLEX_ACK:
+		case baEnum.PduType.ERROR:
+		case baEnum.PduType.REJECT:
+		case baEnum.PduType.ABORT:
 			return buffer[offset + 1]
-		case baEnum.PduTypes.CONFIRMED_REQUEST:
+		case baEnum.PduType.CONFIRMED_REQUEST:
 			return buffer[offset + 2]
 		default:
 			return undefined
@@ -54,7 +55,7 @@ export const encodeConfirmedServiceRequest = (
 	buffer.buffer[buffer.offset++] = type
 	buffer.buffer[buffer.offset++] = maxSegments | maxApdu
 	buffer.buffer[buffer.offset++] = invokeId
-	if ((type & baEnum.PduConReqBits.SEGMENTED_MESSAGE) > 0) {
+	if ((type & baEnum.PduConReqBit.SEGMENTED_MESSAGE) > 0) {
 		if (sequencenumber === undefined) {
 			throw new Error('sequencenumber is undefined')
 		}
@@ -78,7 +79,7 @@ export const decodeConfirmedServiceRequest = (
 	const invokeId = buffer[offset++]
 	let sequencenumber = 0
 	let proposedWindowNumber = 0
-	if ((type & baEnum.PduConReqBits.SEGMENTED_MESSAGE) > 0) {
+	if ((type & baEnum.PduConReqBit.SEGMENTED_MESSAGE) > 0) {
 		sequencenumber = buffer[offset++]
 		proposedWindowNumber = buffer[offset++]
 	}
@@ -153,7 +154,7 @@ export const encodeComplexAck = (
 	let len = 3
 	buffer.buffer[buffer.offset++] = type
 	buffer.buffer[buffer.offset++] = invokeId
-	if ((type & baEnum.PduConReqBits.SEGMENTED_MESSAGE) > 0) {
+	if ((type & baEnum.PduConReqBit.SEGMENTED_MESSAGE) > 0) {
 		if (sequencenumber === undefined) {
 			throw new Error('sequencenumber is undefined')
 		}
@@ -177,7 +178,7 @@ export const decodeComplexAck = (
 	const invokeId = buffer[offset++]
 	let sequencenumber = 0
 	let proposedWindowNumber = 0
-	if ((type & baEnum.PduConReqBits.SEGMENTED_MESSAGE) > 0) {
+	if ((type & baEnum.PduConReqBit.SEGMENTED_MESSAGE) > 0) {
 		sequencenumber = buffer[offset++]
 		proposedWindowNumber = buffer[offset++]
 	}
@@ -220,6 +221,26 @@ export const decodeSegmentAck = (
 		originalInvokeId,
 		sequencenumber,
 		actualWindowSize,
+	}
+}
+
+export const encodeResult = (
+	buffer: EncodeBuffer,
+	resultCode: number,
+): void => {
+	baAsn1.encodeUnsigned(buffer, resultCode, 2)
+}
+
+export const decodeResult = (
+	buffer: Buffer,
+	offset: number,
+): { len: number; resultCode: number } => {
+	const orgOffset = offset
+	const decode = baAsn1.decodeUnsigned(buffer, offset, 2)
+	offset += decode.len
+	return {
+		len: offset - orgOffset,
+		resultCode: decode.value,
 	}
 }
 
