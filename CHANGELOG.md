@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/innovation-system/node-bacnet/compare/v1.0.0...v1.0.1) (2025-04-23)
+
+
+### Bug Fixes
+
+* export enums directly and improve type safety in invert function ([c26e148](https://github.com/innovation-system/node-bacnet/commit/c26e148b94035f388d4dc1bcf33f1beb5229c603))
+
 # [1.0.0](https://github.com/innovation-system/node-bacnet/compare/v1.0.0-beta.3...v1.0.0) (2025-04-23)
 
 
