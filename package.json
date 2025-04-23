@@ -1,6 +1,6 @@
 {
   "name": "@innovation-system/node-bacnet",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0",
   "description": "A BACnet® protocol stack written in pure TypeScript.",
   "main": "./dist/index.js",
   "dependencies": {

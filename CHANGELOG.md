@@ -1,3 +1,10 @@
 # Changelog
 
+# [1.0.0](https://github.com/innovation-system/node-bacnet/compare/v1.0.0-beta.3...v1.0.0) (2025-04-23)
+
+
+### Features
+
+* sync missing commits ([#10](https://github.com/innovation-system/node-bacnet/issues/10)) ([a11f245](https://github.com/innovation-system/node-bacnet/commit/a11f245435ae4dbb1e730491b40037eb0d9b7ccd))
+
 # [1.0.0-beta.3](https://github.com/innovation-system/node-bacnet/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2025-04-16)
