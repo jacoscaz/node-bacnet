@@ -1,9 +1,11 @@
 // Utility function to replace underscore's invert
-function invert(obj: Record<string, number>): Record<number, string> {
-	const result: Record<number, string> = {}
+function invert<T extends Record<string, number>>(
+	obj: T,
+): { [K in T[keyof T]]: keyof T } {
+	const result = {} as { [K in T[keyof T]]: keyof T }
 	for (const key in obj) {
 		if (Object.prototype.hasOwnProperty.call(obj, key)) {
-			result[obj[key]] = key
+			result[obj[key] as T[keyof T]] = key as keyof T
 		}
 	}
 	return result
