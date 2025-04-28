@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/@innovation-system/node-bacnet.svg)](https://www.npmjs.com/package/@innovation-system/node-bacnet)
 [![npm](https://img.shields.io/npm/dt/@innovation-system/node-bacnet.svg)](https://www.npmjs.com/package/@innovation-system/node-bacnet)
-[![GitHub issues](https://img.shields.io/github/issues/innovation-system/node-bacnet.svg)](
+![GitHub issues](https://img.shields.io/github/issues/innovation-system/node-bacnet.svg)
 
 A BACnet® protocol stack written in pure TypeScript from contributors and maintained by [Innovation-System](https://www.innovation-system.it/).
 BACnet® is a protocol to interact with building automation devices defined by ASHRAE.
@@ -12,10 +12,6 @@ BACnet® is a protocol to interact with building automation devices defined by A
 Run the following command in your Node-RED user directory - typically `~/.node-red`
 
         npm install @innovation-system/node-bacnet
-
-try these options on npm install to build from source if you have problems to install
-
-        --unsafe-perm --build-from-source
 
 ### Features
 
@@ -65,9 +61,10 @@ Special thanks to Fabio Huser for the [fundamental work](https://github.com/fh1c
 ## License
 
 MIT
-Copyright (c) 2025-present [Innovation-System](https://innovation-system.it/)
-Copyright (c) 2022-2024 [PLUS for Node-RED](http://plus4nodered.com/)
-origin Copyright (c) 2017-2021 Fabio Huser <fabio@fh1.ch>
+
+- Copyright (c) 2025-present [Innovation-System](https://innovation-system.it/)
+- Copyright (c) 2022-2024 [PLUS for Node-RED](http://plus4nodered.com/)
+- origin Copyright (c) 2017-2021 Fabio Huser <fabio@fh1.ch>
 
 ## Note
 
