@@ -15,6 +15,7 @@ import {
 	BACNetObjectID,
 	BACNetPropertyID,
 	BACNetAppData,
+	BACNetTimestamp,
 	TransportSettings,
 	ClientOptions,
 	WhoIsOptions,
@@ -1314,7 +1315,7 @@ export default class Client extends EventEmitter {
 
 	/**
 	 * The confirmedCOVNotification command is used to push notifications to other
-	 * systems that have registered with us via a subscribeCOV message.
+	 * systems that have registered with us via a subscribeCov message.
 	 */
 	confirmedCOVNotification(
 		receiver: AddressParameter,
@@ -1488,7 +1489,7 @@ export default class Client extends EventEmitter {
 		receiver: string | { address: string; forwardedFrom?: string },
 		objectId: BACNetObjectID,
 		position: number,
-		fileBuffer: Buffer,
+		fileBuffer: number[][],
 		options: ServiceOptions | DataCallback<any>,
 		next?: DataCallback<any>,
 	): void {
@@ -1522,7 +1523,7 @@ export default class Client extends EventEmitter {
 			0,
 			0,
 		)
-		const blocks: number[][] = [Array.from(fileBuffer)]
+		const blocks: number[][] = fileBuffer
 		baServices.atomicWriteFile.encode(
 			buffer,
 			false,
@@ -2204,8 +2205,8 @@ export default class Client extends EventEmitter {
 	 * @param objectId - Object identifier
 	 * @param eventState - Event state to acknowledge
 	 * @param ackText - Acknowledgement text
-	 * @param evTimeStamp - Event timestamp
-	 * @param ackTimeStamp - Acknowledgement timestamp
+	 * @param evTimeStamp - Event timestamp object with type and value properties
+	 * @param ackTimeStamp - Acknowledgement timestamp object with type and value properties
 	 * @param options - Service options
 	 * @param next - Callback function
 	 */
@@ -2214,8 +2215,8 @@ export default class Client extends EventEmitter {
 		objectId: BACNetObjectID,
 		eventState: number,
 		ackText: string,
-		evTimeStamp: Date,
-		ackTimeStamp: Date,
+		evTimeStamp: BACNetTimestamp,
+		ackTimeStamp: BACNetTimestamp,
 		options: ServiceOptions | ErrorCallback,
 		next?: ErrorCallback,
 	): void {

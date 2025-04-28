@@ -1,6 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert'
 
+import * as baEnum from '../../src/lib/enum'
 import * as utils from './utils'
 
 test.describe('bacnet - readPropertyMultiple integration', () => {
@@ -10,11 +11,11 @@ test.describe('bacnet - readPropertyMultiple integration', () => {
 			const requestArray = [
 				{
 					objectId: { type: 8, instance: 4194303 },
-					properties: [{ id: 8 }],
+					properties: [{ id: 8, index: baEnum.ASN1_ARRAY_ALL }],
 				},
 			]
 			client.readPropertyMultiple(
-				'127.0.0.1',
+				'127.0.0.2',
 				requestArray,
 				{},
 				(err, value) => {
@@ -38,11 +39,11 @@ test.describe('bacnet - readPropertyMultiple integration', () => {
 			const requestArray = [
 				{
 					objectId: { type: 8, instance: 4194303 },
-					properties: [{ id: 8 }],
+					properties: [{ id: 8, index: baEnum.ASN1_ARRAY_ALL }],
 				},
 			]
 			client.readPropertyMultiple(
-				'127.0.0.1',
+				'127.0.0.2',
 				requestArray,
 				{},
 				(err, response) => {
@@ -126,7 +127,7 @@ test.describe('bacnet - readPropertyMultiple integration', () => {
 					resolve()
 				},
 			)
-			transport.emit('message', data, '127.0.0.1')
+			transport.emit('message', data, '127.0.0.2')
 		})
 	})
 
@@ -141,11 +142,11 @@ test.describe('bacnet - readPropertyMultiple integration', () => {
 			const requestArray = [
 				{
 					objectId: { type: 8, instance: 4194303 },
-					properties: [{ id: 8 }],
+					properties: [{ id: 8, index: baEnum.ASN1_ARRAY_ALL }],
 				},
 			]
 			client.readPropertyMultiple(
-				'127.0.0.1',
+				'127.0.0.2',
 				requestArray,
 				{},
 				(err, response) => {
@@ -252,7 +253,7 @@ test.describe('bacnet - readPropertyMultiple integration', () => {
 					resolve()
 				},
 			)
-			transport.emit('message', data, '127.0.0.1')
+			transport.emit('message', data, '127.0.0.2')
 		})
 	})
 })
