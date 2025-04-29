@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  workflow_call:
+    inputs:
+      npm_command:
+        description: 'NPM command to run'
+        type: string
+        required: true
+        default: 'install'
+      docker:
+        description: 'Run inside docker'
+        type: boolean
+        required: false
+        default: false
+jobs:
+  test:
+    strategy:
+      fail-fast: false # prevent test to stop if one fails
+      matrix:
+        node-version: [20, 22]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Docker
+        if: ${{ inputs.docker }}
+        run: |
+          docker compose up -d
+
+      - name: Run test
+        timeout-minutes: 2
+        run: npm run ${{ inputs.npm_command }}
+
+      - name: Check .nyc_output
+        id: check_nyc_output
+        run: |
+          if [ -d ".nyc_output" ]; then
+            echo "Directory .nyc_output exists."
+            ls -la .nyc_output
+            # sanitize npm_command replacing `:` with `-`
+            sanitized_npm_command=$(echo "${{ inputs.npm_command }}" | sed 's/:/-/g')
+            # store to environment variable
+            echo "ARTIFACT_NAME=node${{ matrix.node-version }}-${sanitized_npm_command}" >> $GITHUB_ENV
+          else
+            echo "Directory .nyc_output does not exist."
+            ls -la
+            exit 1
+          fi
+      
+      - name: Collect artifacts
+        uses: actions/upload-artifact@v4
+        if: matrix.node-version ==  20
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: .nyc_output
+          if-no-files-found: error
+          include-hidden-files: true # needed as .nyc_output is hidden
