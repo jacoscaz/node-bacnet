@@ -1,5 +1,18 @@
 # Changelog
 
+# [1.1.0](https://github.com/innovation-system/node-bacnet/compare/v1.0.3...v1.1.0) (2025-05-05)
+
+
+### Bug Fixes
+
+* add sleep command to ensure containers are fully up before running tests ([#19](https://github.com/innovation-system/node-bacnet/issues/19)) ([a2a58f3](https://github.com/innovation-system/node-bacnet/commit/a2a58f379eb05fe5f89e0548fba0f3d627fdf095))
+
+
+### Features
+
+* add docker containerization and test compliance ([#16](https://github.com/innovation-system/node-bacnet/issues/16)) ([438ae42](https://github.com/innovation-system/node-bacnet/commit/438ae42d868406451c9237dfa07a4bec7da7f025))
+* add types to events ([48b698c](https://github.com/innovation-system/node-bacnet/commit/48b698c62b2ddd02c07640a91b39fb3a72a47eaa))
+
 ## [1.0.3](https://github.com/innovation-system/node-bacnet/compare/v1.0.2...v1.0.3) (2025-04-28)
 
 ## [1.0.2](https://github.com/innovation-system/node-bacnet/compare/v1.0.1...v1.0.2) (2025-04-23)
