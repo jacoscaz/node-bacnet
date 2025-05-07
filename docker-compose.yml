@@ -1,15 +1,32 @@
 services:
   bacnet-device:
-    image: fh1ch/bacstack-compliance-docker
+    image: ${NODE_IMAGE:-node:20}
+    working_dir: /bacnet
+    volumes:
+      - .:/bacnet
     ports:
       - "47808:47808/udp"
+    # environment:
+    #   - DEBUG=bacnet*
+    command: |
+      bash -c "npm run emulator:start"
+    networks:
+      - bacnet-network
 
   bacnet-client:
     image: ${NODE_IMAGE:-node:20}
     working_dir: /bacnet
-  #  user: node
     volumes:
       - .:/bacnet
+    # environment:
+    #   - DEBUG=bacnet*
+    ports:
+      - "9990:9990" # nodejs debugger
     command: |
       bash -c "tail -f /dev/null"
+    networks:
+      - bacnet-network
 
+networks:
+  bacnet-network:
+    driver: bridge
