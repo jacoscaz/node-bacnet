@@ -16,7 +16,7 @@ const compat = new FlatCompat({
 })
 
 export default defineConfig([
-	globalIgnores(['examples/', 'dist/']),
+	globalIgnores(['dist/']),
 
 	// Configuration for JavaScript files
 	{
@@ -96,6 +96,6 @@ export default defineConfig([
 			'@typescript-eslint/dot-notation': 'off',
 			'@typescript-eslint/no-use-before-define': 'off',
 		},
-		ignores: ['node_modules/', 'dist/', 'examples/', 'coverage/'],
+		ignores: ['node_modules/', 'dist/', 'coverage/'],
 	},
 ])
