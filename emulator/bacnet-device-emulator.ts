@@ -1,8 +1,7 @@
+import debugLib from 'debug'
 import Client from '../src/lib/client'
 import * as baEnum from '../src/lib/enum'
-import debugLib from 'debug'
-import * as baNpdu from '../src/lib/npdu'
-import * as baApdu from '../src/lib/apdu'
+import { BACnetClientEvents } from '../src/lib/EventTypes'
 
 const debug = debugLib('bacnet:device:debug')
 
@@ -632,8 +631,8 @@ client.on('subscribeCov', (data) => {
 	}
 })
 
-const otherServices = [
-	'atomicWriteFile',
+const otherServices: (keyof BACnetClientEvents)[] = [
+	'atomicReadFile',
 	'atomicReadFile',
 	'deviceCommunicationControl',
 	'reinitializeDevice',
@@ -649,4 +648,4 @@ otherServices.forEach((service) => {
 	})
 })
 
-console.log('Node BACstack Device started')
+console.log('Bacnet emulated device started')
