@@ -7,13 +7,13 @@ A BACnet® protocol stack written in pure TypeScript from contributors and maint
 BACnet® is a protocol to interact with building automation devices defined by ASHRAE.
 
 <!-- vscode-markdown-toc -->
-* 1. [Install](#Install)
-* 2. [Docs](#Docs)
-* 3. [Examples](#Examples)
-* 4. [Features](#Features)
-* 5. [Contribution](#Contribution)
-* 6. [License](#License)
-* 7. [Note](#Note)
+1. [Install](#Install)
+2. [Docs](#Docs)
+3. [Examples](#Examples)
+4. [Features](#Features)
+5. [Contribution](#Contribution)
+6. [License](#License)
+7. [Note](#Note)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
