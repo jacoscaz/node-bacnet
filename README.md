@@ -1,3 +1,5 @@
+# Node Bacnet
+
 [![CI](https://github.com/innovation-system/node-bacnet/actions/workflows/ci.yml/badge.svg)](https://github.com/innovation-system/node-bacnet/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/@innovation-system/node-bacnet.svg)](https://www.npmjs.com/package/@innovation-system/node-bacnet)
 [![npm](https://img.shields.io/npm/dt/@innovation-system/node-bacnet.svg)](https://www.npmjs.com/package/@innovation-system/node-bacnet)
@@ -19,7 +21,7 @@ BACnet® is a protocol to interact with building automation devices defined by A
 	numbering=true
 	autoSave=true
 	/vscode-markdown-toc-config -->
-<!-- /vscode-markdown-toc --># Node Bacnet
+<!-- /vscode-markdown-toc -->
 
 ## 1. <a name='Install'></a>Install
 
