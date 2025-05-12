@@ -37,7 +37,7 @@ jobs:
         run: npm ci
 
       - name: Generate documentation
-        run: npx typedoc
+        run: npm run docs
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
