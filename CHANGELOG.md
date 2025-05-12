@@ -1,5 +1,20 @@
 # Changelog
 
+# [1.3.0](https://github.com/innovation-system/node-bacnet/compare/v1.2.0...v1.3.0) (2025-05-12)
+
+
+### Bug Fixes
+
+* correct numbering in table of contents in README ([4afd05c](https://github.com/innovation-system/node-bacnet/commit/4afd05caf2d1b5e8825b06bee67ae8fa0a5f1f34))
+* remove duplicate header in README ([af1e65c](https://github.com/innovation-system/node-bacnet/commit/af1e65c3798346734685688c2352a77590bc39e6))
+* update documentation generation command to use npm script ([f20b6da](https://github.com/innovation-system/node-bacnet/commit/f20b6da891665c9a7afd919e2422702aa4badfd9))
+
+
+### Features
+
+* add GitHub Actions workflow for TypeScript documentation deployment ([#29](https://github.com/innovation-system/node-bacnet/issues/29)) ([6680172](https://github.com/innovation-system/node-bacnet/commit/6680172006264d9a2d8e535210b9c8ffbff5fd07))
+* add missing types ([#30](https://github.com/innovation-system/node-bacnet/issues/30)) ([89d3929](https://github.com/innovation-system/node-bacnet/commit/89d392917d14b9fa5c8a7556d64f61f2a3da0202))
+
 # [1.2.0](https://github.com/innovation-system/node-bacnet/compare/v1.1.0...v1.2.0) (2025-05-09)
 
 
