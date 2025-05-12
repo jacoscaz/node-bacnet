@@ -83,6 +83,9 @@ import {
 	PropertyReference,
 	TypedValue,
 	BacnetService,
+	WritePropertyMultipleObject,
+	DecodeAtomicWriteFileResult,
+	DecodeAtomicReadFileResult,
 } from './types'
 import { format } from 'util'
 import {
@@ -952,10 +955,12 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		receiver: AddressParameter,
 		objectId: BACNetObjectID,
 		propertyId: number,
-		options: ReadPropertyOptions | DataCallback<any>,
-		next?: DataCallback<any>,
+		options:
+			| ReadPropertyOptions
+			| DataCallback<DecodeAcknowledgeSingleResult>,
+		next?: DataCallback<DecodeAcknowledgeSingleResult>,
 	): void {
-		next = next || (options as DataCallback<any>)
+		next = next || (options as DataCallback<DecodeAcknowledgeSingleResult>)
 		const settings: ReadPropertyOptions = {
 			maxSegments:
 				(options as ReadPropertyOptions).maxSegments ||
@@ -1189,25 +1194,18 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 	 */
 	writePropertyMultiple(
 		address: string,
-		values: any[],
+		values: WritePropertyMultipleObject[],
 		callback: ErrorCallback,
 	): void
 	writePropertyMultiple(
 		address: string,
-		values: any[],
+		values: WritePropertyMultipleObject[],
 		options: ServiceOptions,
 		callback: ErrorCallback,
 	): void
 	writePropertyMultiple(
 		receiver: string | { address: string; forwardedFrom?: string },
-		values: Array<{
-			objectId: BACNetObjectID
-			values: Array<{
-				property: PropertyReference
-				value: TypedValue[]
-				priority: number
-			}>
-		}>,
+		values: WritePropertyMultipleObject[],
 		options: ServiceOptions | ErrorCallback,
 		next?: ErrorCallback,
 	): void {
@@ -1419,10 +1417,10 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		objectId: BACNetObjectID,
 		position: number,
 		fileBuffer: number[][],
-		options: ServiceOptions | DataCallback<any>,
-		next?: DataCallback<any>,
+		options: ServiceOptions | DataCallback<DecodeAtomicWriteFileResult>,
+		next?: DataCallback<DecodeAtomicWriteFileResult>,
 	): void {
-		next = next || (options as DataCallback<any>)
+		next = next || (options as DataCallback<DecodeAtomicWriteFileResult>)
 		const settings = {
 			maxSegments:
 				(options as ServiceOptions).maxSegments ||
@@ -1477,10 +1475,10 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		objectId: BACNetObjectID,
 		position: number,
 		count: number,
-		options: ServiceOptions | DataCallback<any>,
-		next?: DataCallback<any>,
+		options: ServiceOptions | DataCallback<DecodeAtomicReadFileResult>,
+		next?: DataCallback<DecodeAtomicReadFileResult>,
 	): void {
-		next = next || (options as DataCallback<any>)
+		next = next || (options as DataCallback<DecodeAtomicReadFileResult>)
 		const settings = {
 			maxSegments:
 				(options as ServiceOptions).maxSegments ||

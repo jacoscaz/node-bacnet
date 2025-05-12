@@ -20,7 +20,7 @@ export type AddressParameter = string | ReceiverAddress
 
 export interface PropertyReference {
 	id: number
-	index: number
+	index?: number
 }
 
 export interface TypedValue {
@@ -573,4 +573,29 @@ export interface DeviceObjectResult {
 		objectId: BACNetObjectID
 		values: PropertyResult[]
 	}>
+}
+
+export interface WritePropertyMultipleValue {
+	property: PropertyReference
+	value: BACNetAppData[]
+	priority: number
+}
+
+export interface WritePropertyMultipleObject {
+	objectId: BACNetObjectID
+	values: WritePropertyMultipleValue[]
+}
+
+export interface DecodeAtomicWriteFileResult {
+	len: number
+	isStream: boolean
+	position: number
+}
+
+export interface DecodeAtomicReadFileResult {
+	len: number
+	endOfFile: boolean
+	isStream: boolean
+	position: number
+	buffer: Buffer
 }
