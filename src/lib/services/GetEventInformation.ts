@@ -20,15 +20,15 @@ export default class GetEventInformation extends BacnetAckService {
 		let len = 0
 		const result = baAsn1.decodeTagNumberAndValue(buffer, offset + len)
 		len += result.len
-    let lastReceivedObjectId: BACNetObjectID | null = null;
-    if (offset + len < buffer.length) {
-  		const decodedValue = baAsn1.decodeObjectId(buffer, offset + len)
-  		len += decodedValue.len
-      lastReceivedObjectId = {
-        type: decodedValue.objectType,
-        instance: decodedValue.instance,
-      }
-    }
+		let lastReceivedObjectId: BACNetObjectID | null = null;
+		if (offset + len < buffer.length) {
+			const decodedValue = baAsn1.decodeObjectId(buffer, offset + len)
+			len += decodedValue.len
+			lastReceivedObjectId = {
+				type: decodedValue.objectType,
+				instance: decodedValue.instance,
+			}
+		}
 		return { len, lastReceivedObjectId }
 	}
 
