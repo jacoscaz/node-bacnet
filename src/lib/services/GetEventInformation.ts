@@ -20,7 +20,12 @@ export default class GetEventInformation extends BacnetAckService {
 		let len = 0
 		const result = baAsn1.decodeTagNumberAndValue(buffer, offset + len)
 		len += result.len
-		let lastReceivedObjectId: BACNetObjectID | null = null;
+		let lastReceivedObjectId: BACNetObjectID | null = null
+		// According to clause 13.12 of the BACnet specification, requests for
+		// the `getEventInformation` service may include the optional parameter
+		// "Last Received Object Identifier" used by client to specify the last
+		// Object Identifier received in a preceding "GetEventInformation"
+		// response.
 		if (offset + len < buffer.length) {
 			const decodedValue = baAsn1.decodeObjectId(buffer, offset + len)
 			len += decodedValue.len
