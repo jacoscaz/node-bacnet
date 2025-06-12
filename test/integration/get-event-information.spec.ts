@@ -35,9 +35,11 @@ test.describe('bacnet - getEventInformation integration', () => {
 			// Ecostruxture Building Operation (EBO). I've opted to inject an
 			// external payload rather than using this very library to generate
 			// the request as the latter could hide or confuse different issues.
-			/* eslint-disable */
-			// @ts-ignore
-			client._transport.emit('message', Buffer.from('810a000a01040205431d', 'hex'));
+			client['_transport'].emit(
+				'message',
+				Buffer.from('810a000a01040205431d', 'hex'),
+				'127.0.0.1:8080',
+			)
 		})
 	})
 })
