@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/innovation-system/node-bacnet/compare/v1.3.0...v1.3.1) (2025-06-13)
+
+
+### Bug Fixes
+
+* **GetEventInformation:** decoding error ERR_OUT_OF_RANGE if object identifier is not provided ([#33](https://github.com/innovation-system/node-bacnet/issues/33)) ([193b728](https://github.com/innovation-system/node-bacnet/commit/193b7283a0228ee1591a9dcdba51b9bea15e4b64))
+
 # [1.3.0](https://github.com/innovation-system/node-bacnet/compare/v1.2.0...v1.3.0) (2025-05-12)
 
 
