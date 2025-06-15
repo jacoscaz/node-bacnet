@@ -1,3 +1,4 @@
+export type EnumType = Record<string, number> & Record<number, string>
 
 /**
  * Turn an enum into a string suitable for debugging.
@@ -12,7 +13,7 @@
  * console.log(s); // "PRESENT_VALUE(85)"
  */
 export function getEnumName(
-	group: Record<string, number>,
+	group: EnumType,
 	value: number,
 	addNumberValue: boolean = true,
 	undefinedFallbackValue?: string,
@@ -24,21 +25,16 @@ export function getEnumName(
 			}"`,
 		)
 	}
-	let foundEntry: string | null = null
-	try {
-		const invertedGroup = invert(group)
-		foundEntry = invertedGroup[value]
-		if (foundEntry === undefined && undefinedFallbackValue) {
+	let foundEntry: string | undefined = group[value]
+	if (foundEntry === undefined) {
+		if (undefinedFallbackValue) {
 			foundEntry = undefinedFallbackValue
-		}
-		if (foundEntry === undefined) {
+			if (addNumberValue) {
+				foundEntry += `(${value})`
+			}
+		} else {
 			foundEntry = value.toString()
-		} else if (addNumberValue) {
-			foundEntry += `(${value})`
 		}
-	} catch (e) {
-		console.trace((e as Error).message)
-		foundEntry = null
 	}
 	return foundEntry
 }
