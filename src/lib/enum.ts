@@ -1,28 +1,3 @@
-// Utility function to replace underscore's invert
-
-export type ValueOf<T extends Record<string, number>> = T[keyof T]
-
-export type InvertedEnum<T extends Record<string, number>> = {
-	[K in ValueOf<T>]: keyof { [P in keyof T as T[P] extends K ? P : never]: P }
-} & {
-	// Makes sure TypeScript errors on non-existent properties
-	[k: number]: never
-}
-
-export function invert<T extends Record<string, number>>(
-	obj: T,
-): InvertedEnum<T> {
-	const result: Record<number, string> = {}
-
-	for (const key in obj) {
-		if (Object.prototype.hasOwnProperty.call(obj, key)) {
-			const value = obj[key]
-			result[value] = key
-		}
-	}
-
-	return result as InvertedEnum<T>
-}
 
 /**
  * Turn an enum into a string suitable for debugging.
