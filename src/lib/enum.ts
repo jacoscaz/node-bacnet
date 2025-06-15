@@ -1,4 +1,17 @@
-export type EnumType = Record<string, number> & Record<number, string>
+/**
+ * Generic type for TypeScript enums. I admit I'm still not entirely clear as
+ * to how or why this works the way it does. There's an element of recursivity
+ * that feels like black magic.
+ */
+type EnumType<E> = Record<keyof E, number | string> & { [k: number]: string }
+
+/**
+ * Given a native TypeScript enum, return the entire set of the enum's values
+ * as an array, strongly-typed.
+ */
+export function getEnumValues<E extends EnumType<E>>(group: E): E[keyof E][] {
+	return Object.values(group).filter((v) => typeof v === 'number')
+}
 
 /**
  * Turn an enum into a string suitable for debugging.
@@ -12,29 +25,29 @@ export type EnumType = Record<string, number> & Record<number, string>
  * );
  * console.log(s); // "PRESENT_VALUE(85)"
  */
-export function getEnumName(
-	group: EnumType,
+export function getEnumName<E extends EnumType<E>>(
+	group: E,
 	value: number,
 	addNumberValue: boolean = true,
 	undefinedFallbackValue?: string,
 ): string | null {
 	if (!Number.isInteger(value)) {
 		throw new Error(
-			`getEnumName() can only be passed an integer value, was given "${
-				value
-			}"`,
+			`getEnumName() can only be passed an integer value, was given "${value}"`,
 		)
 	}
 	let foundEntry: string | undefined = group[value]
-	if (foundEntry === undefined) {
+	if (!foundEntry) {
 		if (undefinedFallbackValue) {
 			foundEntry = undefinedFallbackValue
-			if (addNumberValue) {
-				foundEntry += `(${value})`
-			}
-		} else {
-			foundEntry = value.toString()
 		}
+	}
+	if (foundEntry) {
+		if (addNumberValue) {
+			foundEntry += `(${value})`
+		}
+	} else {
+		foundEntry = value.toString()
 	}
 	return foundEntry
 }
