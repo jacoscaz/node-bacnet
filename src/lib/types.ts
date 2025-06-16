@@ -1,4 +1,12 @@
-import { ApplicationTag, EventState, EventType, NotifyType, ObjectType, PropertyIdentifier, TimeStamp } from "./enum"
+import {
+	ApplicationTag,
+	EventState,
+	EventType,
+	NotifyType,
+	ObjectType,
+	PropertyIdentifier,
+	TimeStamp,
+} from './enum'
 
 export interface EncodeBuffer {
 	buffer: Buffer
