@@ -157,8 +157,8 @@ export interface ApplicationTagValueTypeMap {
 	[ApplicationTag.DATETIME]: any
 	[ApplicationTag.TIMESTAMP]: BACNetTimestamp
 	[ApplicationTag.ERROR]: any
-	[ApplicationTag.DEVICE_OBJECT_PROPERTY_REFERENCE]: any
-	[ApplicationTag.DEVICE_OBJECT_REFERENCE]: any
+	[ApplicationTag.DEVICE_OBJECT_PROPERTY_REFERENCE]: DeviceObjPropertyRef
+	[ApplicationTag.DEVICE_OBJECT_REFERENCE]: BACNetDevObjRef
 	[ApplicationTag.OBJECT_PROPERTY_REFERENCE]: any
 	[ApplicationTag.DESTINATION]: any
 	[ApplicationTag.RECIPIENT]: BACNetRecipient
