@@ -1,4 +1,9 @@
-import { ObjectTypesSupportedBitString, ServicesSupportedBitString, StatusFlagsBitString } from './bitstring'
+import {
+	ObjectTypesSupportedBitString,
+	ServicesSupportedBitString,
+	StatusFlagsBitString,
+} from './bitstring'
+
 import {
 	ApplicationTag,
 	EventState,
