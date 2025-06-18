@@ -1,21 +1,21 @@
 import {
-	ObjectTypesSupportedBitString,
-	ServicesSupportedBitString,
-	StatusFlagsBitString,
+	type ObjectTypesSupportedBitString,
+	type ServicesSupportedBitString,
+	type StatusFlagsBitString,
 } from './bitstring'
 
 import {
-	ApplicationTag,
-	EventState,
-	EventType,
-	NotifyType,
-	ObjectType,
-	PropertyIdentifier,
-	TimeStamp,
-	EngineeringUnits,
-	DeviceStatus,
-	Segmentation,
-	Reliability,
+	type ApplicationTag,
+	type EventState,
+	type EventType,
+	type NotifyType,
+	type ObjectType,
+	type PropertyIdentifier,
+	type TimeStamp,
+	type EngineeringUnits,
+	type DeviceStatus,
+	type Segmentation,
+	type Reliability,
 } from './enum'
 
 export interface EncodeBuffer {
