@@ -197,13 +197,6 @@ export interface Calendar {
 	value: any[]
 }
 
-export interface AppData {
-	len: number
-	type: ApplicationTag
-	value: any
-	encoding?: number
-}
-
 export interface DeviceObjPropertyRef {
 	len: number
 	value: {
