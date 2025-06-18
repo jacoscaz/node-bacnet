@@ -3,7 +3,9 @@
  * to how or why this works the way it does. There's an element of recursivity
  * that feels like black magic.
  */
-type EnumType<E> = Record<keyof E, number | string> & { [k: number]: string }
+export type EnumType<E> = Record<keyof E, number | string> & {
+	[k: number]: string
+}
 
 /**
  * Given a native TypeScript enum, return the entire set of the enum's values

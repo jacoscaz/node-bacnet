@@ -1,3 +1,4 @@
+import { ObjectTypesSupportedBitString, ServicesSupportedBitString, StatusFlagsBitString } from './bitstring'
 import {
 	ApplicationTag,
 	EventState,
@@ -139,7 +140,10 @@ export interface ApplicationTagValueTypeMap {
 	[ApplicationTag.DOUBLE]: number
 	[ApplicationTag.OCTET_STRING]: any
 	[ApplicationTag.CHARACTER_STRING]: string
-	[ApplicationTag.BIT_STRING]: any
+	[ApplicationTag.BIT_STRING]:
+		| StatusFlagsBitString
+		| ServicesSupportedBitString
+		| ObjectTypesSupportedBitString
 	[ApplicationTag.ENUMERATED]:
 		| ObjectType
 		| EventState
