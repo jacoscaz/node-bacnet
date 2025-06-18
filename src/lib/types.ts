@@ -144,11 +144,8 @@ export interface ObjectId {
 	instance: number
 }
 
-export interface ApplicationData {
+export interface ApplicationData extends BACNetAppData {
 	len: number
-	type: ApplicationTag
-	value: any
-	encoding?: number
 }
 
 export interface BACNetReadAccess {
