@@ -43,9 +43,17 @@ export interface PropertyReference {
 	index?: number
 }
 
-export interface TypedValue {
-	type: ApplicationTag
-	value: any
+/**
+ * TODO: when the times comes, drop the default value for the `Tag`
+ * paramter to enforce strong typing throughout the entire library.
+ */
+export interface TypedValue<
+	Tag extends ApplicationTag = ApplicationTag,
+	Type extends
+		ApplicationTagValueTypeMap[Tag] = ApplicationTagValueTypeMap[Tag],
+> {
+	type: Tag
+	value: Type
 }
 
 export interface TransportSettings {
