@@ -1,5 +1,12 @@
 # Changelog
 
+# [2.1.0](https://github.com/innovation-system/node-bacnet/compare/v2.0.1...v2.1.0) (2025-06-19)
+
+
+### Features
+
+* **types:** scaffolding for stronger typing of ApplicationData values ([#35](https://github.com/innovation-system/node-bacnet/issues/35)) ([733c02c](https://github.com/innovation-system/node-bacnet/commit/733c02c7eea8c1a4b97dcce2557fb56ced873fbc))
+
 ## [2.0.1](https://github.com/innovation-system/node-bacnet/compare/v2.0.0...v2.0.1) (2025-06-17)
 
 # [2.0.0](https://github.com/innovation-system/node-bacnet/compare/v1.3.1...v2.0.0) (2025-06-16)
