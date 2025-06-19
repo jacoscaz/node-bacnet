@@ -1,0 +1,11 @@
+import debugModule from 'debug';
+import BACnetClient from '../../src/lib/client';
+export declare const debug: debugModule.Debugger;
+export declare const trace: debugModule.Debugger;
+export declare const bacnetClient: typeof BACnetClient;
+export declare const deviceUnderTest = 1234;
+export declare const maxApdu = 1482;
+export declare const vendorId = 260;
+export declare const index = 4294967295;
+export declare const apduTimeout = 3000;
+export declare const clientListenerInterface = "0.0.0.0";
