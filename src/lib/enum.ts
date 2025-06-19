@@ -1857,6 +1857,8 @@ export enum LogStatus {
 	LOG_INTERRUPTED = 2,
 }
 
+// TODO: rename to `ObjectTypesSupportedBit` in next major release
+//       to indicate that this enum represents bitstring positions
 export enum ObjectTypesSupported {
 	ANALOG_INPUT = 0,
 	ANALOG_OUTPUT = 1,
@@ -1926,6 +1928,8 @@ export enum ResultFlags {
 	MORE_ITEMS = 2,
 }
 
+// TODO: rename to `ServicesSupportedBit` in next major release
+//       to indicate that this enum represents bitstring positions
 export enum ServicesSupported {
 	ACKNOWLEDGE_ALARM = 0,
 	CONFIRMED_COV_NOTIFICATION = 1,
@@ -1973,6 +1977,8 @@ export enum ServicesSupported {
 	UNCONFIRMED_COV_NOTIFICATION_MULTIPLE = 43,
 }
 
+// TODO: rename to `StatusFlagsBit` in next major release
+//       to indicate that this enum represents bitstring positions
 export enum StatusFlags {
 	IN_ALARM = 0,
 	FAULT = 1,
