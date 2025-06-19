@@ -19,6 +19,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const client_1 = __importDefault(require("./lib/client"));
 __exportStar(require("./lib/enum"), exports);
+__exportStar(require("./lib/bitstring"), exports);
 exports.default = client_1.default;
 __exportStar(require("./lib/types"), exports);
 //# sourceMappingURL=index.js.map
