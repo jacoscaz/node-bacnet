@@ -198,15 +198,15 @@ export interface BACNetEventInformation {
 	eventPriorities: number[]
 }
 
+export interface TimeStampValueTypeMap {
+	[TimeStamp.DATETIME]: Date
+	[TimeStamp.SEQUENCE_NUMBER]: number
+	[TimeStamp.TIME]: Date
+}
+
 export interface BACNetTimestamp<T extends TimeStamp = TimeStamp> {
 	type: T
-	value: T extends TimeStamp.DATETIME
-		? Date
-		: T extends TimeStamp.SEQUENCE_NUMBER
-			? number
-			: T extends TimeStamp.TIME
-				? Date
-				: never
+	value: TimeStampValueTypeMap[T]
 }
 
 export interface Decode<T> {
