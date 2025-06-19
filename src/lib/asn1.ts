@@ -21,7 +21,6 @@ import {
 	CalendarDateRange,
 	CalendarWeekDay,
 	Calendar,
-	AppData,
 	DeviceObjPropertyRef,
 	ReadAccessSpec,
 	CovSubscription,
@@ -1428,9 +1427,9 @@ const bacappDecodeData = (
 	maxLength: number,
 	tagDataType: number,
 	lenValueType: number,
-): AppData => {
+): ApplicationData => {
 	let result
-	const value: AppData = {
+	const value: ApplicationData = {
 		len: 0,
 		type: tagDataType,
 		value: null,

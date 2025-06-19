@@ -1,11 +1,21 @@
 import {
-	ApplicationTag,
-	EventState,
-	EventType,
-	NotifyType,
-	ObjectType,
-	PropertyIdentifier,
-	TimeStamp,
+	type ObjectTypesSupportedBitString,
+	type ServicesSupportedBitString,
+	type StatusFlagsBitString,
+} from './bitstring'
+
+import {
+	type ApplicationTag,
+	type EventState,
+	type EventType,
+	type NotifyType,
+	type ObjectType,
+	type PropertyIdentifier,
+	type TimeStamp,
+	type EngineeringUnits,
+	type DeviceStatus,
+	type Segmentation,
+	type Reliability,
 } from './enum'
 
 export interface EncodeBuffer {
@@ -33,9 +43,17 @@ export interface PropertyReference {
 	index?: number
 }
 
-export interface TypedValue {
-	type: ApplicationTag
-	value: any
+/**
+ * TODO: when the times comes, drop the default value for the `Tag`
+ * paramter to enforce strong typing throughout the entire library.
+ */
+export interface TypedValue<
+	Tag extends ApplicationTag = ApplicationTag,
+	Type extends
+		ApplicationTagValueTypeMap[Tag] = ApplicationTagValueTypeMap[Tag],
+> {
+	type: Tag
+	value: Type
 }
 
 export interface TransportSettings {
@@ -65,11 +83,13 @@ export interface BACNetBitString {
 	value: number[]
 }
 
+export interface BACNetRecipient {
+	network: number
+	address: number[]
+}
+
 export interface BACNetCovSubscription {
-	recipient: {
-		network: number
-		address: number[]
-	}
+	recipient: BACNetRecipient
 	subscriptionProcessId: number
 	monitoredObjectId: BACNetObjectID
 	monitoredProperty: BACNetPropertyID
@@ -101,10 +121,74 @@ export interface BACNetDevObjRef {
 	deviceIndentifier: BACNetObjectID
 }
 
-export interface BACNetAppData {
-	type: ApplicationTag
-	value: any
+/**
+ * TODO: when the time comes, drop the default value for the `Tag` generic
+ *       parameter to enforce type safety everywhere throughout the library.
+ */
+export interface BACNetAppData<
+	Tag extends ApplicationTag = ApplicationTag,
+	Type extends
+		ApplicationTagValueTypeMap[Tag] = ApplicationTagValueTypeMap[Tag],
+> {
+	type: Tag
+	value: Type
 	encoding?: number
+}
+
+/**
+ * Map between BACnet Application Tags and TypeScript types.
+ *
+ * This interface defines the mapping between each BACnet ApplicationTag
+ * and its corresponding TypeScript type. This mapping is used throughout
+ * the library to ensure type safety when working with BACnet values.
+ *
+ * Entries mapping to the `any` type are yet to be typed.
+ */
+export interface ApplicationTagValueTypeMap {
+	[ApplicationTag.NULL]: null
+	[ApplicationTag.BOOLEAN]: boolean
+	[ApplicationTag.UNSIGNED_INTEGER]: number
+	[ApplicationTag.SIGNED_INTEGER]: number
+	[ApplicationTag.REAL]: number
+	[ApplicationTag.DOUBLE]: number
+	[ApplicationTag.OCTET_STRING]: any
+	[ApplicationTag.CHARACTER_STRING]: string
+	[ApplicationTag.BIT_STRING]:
+		| StatusFlagsBitString
+		| ServicesSupportedBitString
+		| ObjectTypesSupportedBitString
+	[ApplicationTag.ENUMERATED]:
+		| ObjectType
+		| EventState
+		| EngineeringUnits
+		| PropertyIdentifier
+		| DeviceStatus
+		| Segmentation
+		| Reliability
+	[ApplicationTag.DATE]: Date
+	[ApplicationTag.TIME]: Date
+	[ApplicationTag.OBJECTIDENTIFIER]: BACNetObjectID
+	[ApplicationTag.EMPTYLIST]: any
+	[ApplicationTag.WEEKNDAY]: any
+	[ApplicationTag.DATERANGE]: any
+	[ApplicationTag.DATETIME]: any
+	[ApplicationTag.TIMESTAMP]: BACNetTimestamp
+	[ApplicationTag.ERROR]: any
+	[ApplicationTag.DEVICE_OBJECT_PROPERTY_REFERENCE]: DeviceObjPropertyRef
+	[ApplicationTag.DEVICE_OBJECT_REFERENCE]: BACNetDevObjRef
+	[ApplicationTag.OBJECT_PROPERTY_REFERENCE]: any
+	[ApplicationTag.DESTINATION]: any
+	[ApplicationTag.RECIPIENT]: BACNetRecipient
+	[ApplicationTag.COV_SUBSCRIPTION]: BACNetCovSubscription
+	[ApplicationTag.CALENDAR_ENTRY]: any
+	[ApplicationTag.WEEKLY_SCHEDULE]: any
+	[ApplicationTag.SPECIAL_EVENT]: any
+	[ApplicationTag.READ_ACCESS_SPECIFICATION]: any
+	[ApplicationTag.READ_ACCESS_RESULT]: any
+	[ApplicationTag.LIGHTING_COMMAND]: any
+	[ApplicationTag.CONTEXT_SPECIFIC_DECODED]: any
+	[ApplicationTag.CONTEXT_SPECIFIC_ENCODED]: any
+	[ApplicationTag.LOG_RECORD]: any
 }
 
 export interface BACNetPropertyState {
@@ -122,9 +206,15 @@ export interface BACNetEventInformation {
 	eventPriorities: number[]
 }
 
-export interface BACNetTimestamp {
-	type: TimeStamp
-	value: any
+export interface TimeStampValueTypeMap {
+	[TimeStamp.DATETIME]: Date
+	[TimeStamp.SEQUENCE_NUMBER]: number
+	[TimeStamp.TIME]: Date
+}
+
+export interface BACNetTimestamp<T extends TimeStamp = TimeStamp> {
+	type: T
+	value: TimeStampValueTypeMap[T]
 }
 
 export interface Decode<T> {
@@ -144,11 +234,8 @@ export interface ObjectId {
 	instance: number
 }
 
-export interface ApplicationData {
+export interface ApplicationData extends BACNetAppData {
 	len: number
-	type: ApplicationTag
-	value: any
-	encoding?: number
 }
 
 export interface BACNetReadAccess {
@@ -195,13 +282,6 @@ export interface CalendarWeekDay {
 export interface Calendar {
 	len: number
 	value: any[]
-}
-
-export interface AppData {
-	len: number
-	type: ApplicationTag
-	value: any
-	encoding?: number
 }
 
 export interface DeviceObjPropertyRef {
