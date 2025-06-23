@@ -3,14 +3,17 @@ import {
 	type StatusFlags,
 	type ObjectTypesSupported,
 	type ServicesSupported,
+	ASN1_MAX_BITSTRING_BYTES,
 } from './enum'
 
 import { type BACNetBitString } from './types'
 
+export const MAX_BITSTRING_BITS = ASN1_MAX_BITSTRING_BYTES * 8
+
 /**
  * Represents a single bit value (0 or 1) in a BACnet bitstring
  */
-export type Bit = 1 | 0
+export type Byte = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
 
 /**
  * Generic implementation of a BACnet bitstring
@@ -32,7 +35,7 @@ export abstract class AbstractBitString<E extends EnumType<E>>
 	/**
 	 * The array of bit values (0 or 1)
 	 */
-	readonly value: Bit[]
+	readonly value: Byte[]
 
 	/**
 	 * Creates a new bitstring with the specified bits set to 1
@@ -41,11 +44,22 @@ export abstract class AbstractBitString<E extends EnumType<E>>
 	 * @param trueBits - Array of enum values representing the positions of bits to set to 1
 	 */
 	constructor(bitsUsed: number, trueBits: E[keyof E][]) {
+		if (bitsUsed > MAX_BITSTRING_BITS) {
+			throw new Error(
+				`Bitstring too large; a bitstring cannot exceed ${MAX_BITSTRING_BITS}`,
+			)
+		}
 		this.bitsUsed = bitsUsed
-		this.value = new Array(bitsUsed).fill(0)
-		for (const index of trueBits) {
-			if (typeof index === 'number') {
-				this.value[index] = 1
+		this.value = new Array(Math.ceil(bitsUsed / 8)).fill(0)
+		for (const bitIndex of trueBits) {
+			if (typeof bitIndex === 'number') {
+				if (bitIndex >= bitsUsed) {
+					throw new Error(
+						`Bit index ${bitIndex} is out of range for a bitstring of length ${bitsUsed}`,
+					)
+				}
+				this.value[Math.floor(bitIndex / 8)] |= (1 <<
+					bitIndex % 8) as Byte
 			}
 		}
 	}
@@ -85,7 +99,7 @@ export class ObjectTypesSupportedBitString extends AbstractBitString<
 	typeof ObjectTypesSupported
 > {
 	constructor(...trueBits: ObjectTypesSupported[]) {
-		super(112, trueBits)
+		super(80, trueBits)
 	}
 }
 
@@ -104,6 +118,6 @@ export class ServicesSupportedBitString extends AbstractBitString<
 	typeof ServicesSupported
 > {
 	constructor(...trueBits: ServicesSupported[]) {
-		super(112, trueBits)
+		super(40, trueBits)
 	}
 }
