@@ -11,11 +11,6 @@ import { type BACNetBitString } from './types'
 export const MAX_BITSTRING_BITS = ASN1_MAX_BITSTRING_BYTES * 8
 
 /**
- * Represents a single bit value (0 or 1) in a BACnet bitstring
- */
-export type Byte = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
-
-/**
  * Generic implementation of a BACnet bitstring
  *
  * This class provides a strongly-typed representation of BACnet bitstrings,
@@ -33,9 +28,9 @@ export abstract class AbstractBitString<E extends EnumType<E>>
 	readonly bitsUsed: number
 
 	/**
-	 * The array of bit values (0 or 1)
+	 * The array of byte values (0 - 255)
 	 */
-	readonly value: Byte[]
+	readonly value: number[]
 
 	/**
 	 * Creates a new bitstring with the specified bits set to 1
@@ -58,8 +53,7 @@ export abstract class AbstractBitString<E extends EnumType<E>>
 						`Bit index ${bitIndex} is out of range for a bitstring of length ${bitsUsed}`,
 					)
 				}
-				this.value[Math.floor(bitIndex / 8)] |= (1 <<
-					bitIndex % 8) as Byte
+				this.value[Math.floor(bitIndex / 8)] |= 1 << bitIndex % 8
 			}
 		}
 	}
