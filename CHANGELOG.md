@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.2](https://github.com/innovation-system/node-bacnet/compare/v2.1.1...v2.1.2) (2025-06-24)
+
+
+### Bug Fixes
+
+* **docs:** exclude test files from documentation generation ([cd4fc00](https://github.com/innovation-system/node-bacnet/commit/cd4fc005114ae4de62d599f52a9f7f4ea74b85ba))
+* **docs:** update documentation generation command to exclude test files ([#37](https://github.com/innovation-system/node-bacnet/issues/37)) ([5b5733a](https://github.com/innovation-system/node-bacnet/commit/5b5733ae7fe3002135408571eb36662e3b81c94e))
+
 ## [2.1.1](https://github.com/innovation-system/node-bacnet/compare/v2.1.0...v2.1.1) (2025-06-24)
 
 
