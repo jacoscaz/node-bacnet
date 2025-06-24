@@ -31,7 +31,6 @@ test.describe('bacnet - bitstring', () => {
 			assert.strictEqual(new GenericBitString<A>(24, []).value.length, 3)
 			assert.strictEqual(new GenericBitString<A>(25, []).value.length, 4)
 		})
-		test('should have value length equal to the number of bits divided by 8, rounded up ', () => {})
 		test('should throw when using a positional value greater than the bitstring size', () => {
 			enum A {
 				one = 128,
