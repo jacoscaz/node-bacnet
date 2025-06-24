@@ -19,7 +19,7 @@ export const MAX_BITSTRING_BITS = ASN1_MAX_BITSTRING_BYTES * 8
  *
  * @typeParam E - An enum type that defines the bit positions
  */
-export abstract class AbstractBitString<E extends EnumType<E>>
+export class GenericBitString<E extends EnumType<E>>
 	implements BACNetBitString
 {
 	/**
@@ -70,9 +70,7 @@ export abstract class AbstractBitString<E extends EnumType<E>>
  * This implementation extends the generic BitString class with the
  * StatusFlagsBit enumeration.
  */
-export class StatusFlagsBitString extends AbstractBitString<
-	typeof StatusFlags
-> {
+export class StatusFlagsBitString extends GenericBitString<typeof StatusFlags> {
 	constructor(...trueBits: StatusFlags[]) {
 		super(4, trueBits)
 	}
@@ -89,7 +87,7 @@ export class StatusFlagsBitString extends AbstractBitString<
  * allocates 112 bits to accommodate all standard object types, even though the current
  * highest-numbered object type is 59 (LIFT).
  */
-export class ObjectTypesSupportedBitString extends AbstractBitString<
+export class ObjectTypesSupportedBitString extends GenericBitString<
 	typeof ObjectTypesSupported
 > {
 	constructor(...trueBits: ObjectTypesSupported[]) {
@@ -108,7 +106,7 @@ export class ObjectTypesSupportedBitString extends AbstractBitString<
  * allocates 112 bits to accommodate all standard services, including those that might
  * be added in future versions of the standard.
  */
-export class ServicesSupportedBitString extends AbstractBitString<
+export class ServicesSupportedBitString extends GenericBitString<
 	typeof ServicesSupported
 > {
 	constructor(...trueBits: ServicesSupported[]) {
