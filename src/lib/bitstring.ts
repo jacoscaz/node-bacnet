@@ -3,14 +3,12 @@ import {
 	type StatusFlags,
 	type ObjectTypesSupported,
 	type ServicesSupported,
+	ASN1_MAX_BITSTRING_BYTES,
 } from './enum'
 
 import { type BACNetBitString } from './types'
 
-/**
- * Represents a single bit value (0 or 1) in a BACnet bitstring
- */
-export type Bit = 1 | 0
+export const MAX_BITSTRING_BITS = ASN1_MAX_BITSTRING_BYTES * 8
 
 /**
  * Generic implementation of a BACnet bitstring
@@ -21,7 +19,7 @@ export type Bit = 1 | 0
  *
  * @typeParam E - An enum type that defines the bit positions
  */
-export abstract class AbstractBitString<E extends EnumType<E>>
+export class GenericBitString<E extends EnumType<E>>
 	implements BACNetBitString
 {
 	/**
@@ -30,9 +28,9 @@ export abstract class AbstractBitString<E extends EnumType<E>>
 	readonly bitsUsed: number
 
 	/**
-	 * The array of bit values (0 or 1)
+	 * The array of byte values (0 - 255)
 	 */
-	readonly value: Bit[]
+	readonly value: number[]
 
 	/**
 	 * Creates a new bitstring with the specified bits set to 1
@@ -41,11 +39,21 @@ export abstract class AbstractBitString<E extends EnumType<E>>
 	 * @param trueBits - Array of enum values representing the positions of bits to set to 1
 	 */
 	constructor(bitsUsed: number, trueBits: E[keyof E][]) {
+		if (bitsUsed > MAX_BITSTRING_BITS) {
+			throw new Error(
+				`Bitstring too large; a bitstring cannot exceed ${MAX_BITSTRING_BITS}`,
+			)
+		}
 		this.bitsUsed = bitsUsed
-		this.value = new Array(bitsUsed).fill(0)
-		for (const index of trueBits) {
-			if (typeof index === 'number') {
-				this.value[index] = 1
+		this.value = new Array(Math.ceil(bitsUsed / 8)).fill(0)
+		for (const bitIndex of trueBits) {
+			if (typeof bitIndex === 'number') {
+				if (bitIndex >= bitsUsed) {
+					throw new Error(
+						`Bit index ${bitIndex} is out of range for a bitstring of length ${bitsUsed}`,
+					)
+				}
+				this.value[Math.floor(bitIndex / 8)] |= 1 << bitIndex % 8
 			}
 		}
 	}
@@ -62,9 +70,7 @@ export abstract class AbstractBitString<E extends EnumType<E>>
  * This implementation extends the generic BitString class with the
  * StatusFlagsBit enumeration.
  */
-export class StatusFlagsBitString extends AbstractBitString<
-	typeof StatusFlags
-> {
+export class StatusFlagsBitString extends GenericBitString<typeof StatusFlags> {
 	constructor(...trueBits: StatusFlags[]) {
 		super(4, trueBits)
 	}
@@ -81,11 +87,11 @@ export class StatusFlagsBitString extends AbstractBitString<
  * allocates 112 bits to accommodate all standard object types, even though the current
  * highest-numbered object type is 59 (LIFT).
  */
-export class ObjectTypesSupportedBitString extends AbstractBitString<
+export class ObjectTypesSupportedBitString extends GenericBitString<
 	typeof ObjectTypesSupported
 > {
 	constructor(...trueBits: ObjectTypesSupported[]) {
-		super(112, trueBits)
+		super(80, trueBits)
 	}
 }
 
@@ -100,10 +106,10 @@ export class ObjectTypesSupportedBitString extends AbstractBitString<
  * allocates 112 bits to accommodate all standard services, including those that might
  * be added in future versions of the standard.
  */
-export class ServicesSupportedBitString extends AbstractBitString<
+export class ServicesSupportedBitString extends GenericBitString<
 	typeof ServicesSupported
 > {
 	constructor(...trueBits: ServicesSupported[]) {
-		super(112, trueBits)
+		super(40, trueBits)
 	}
 }
