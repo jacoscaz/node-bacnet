@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/innovation-system/node-bacnet/compare/v2.1.0...v2.1.1) (2025-06-24)
+
+
+### Bug Fixes
+
+* **bitstrings:** refactor to use arrays of bytes rather than arrays of bits ([#36](https://github.com/innovation-system/node-bacnet/issues/36)) ([718e8b4](https://github.com/innovation-system/node-bacnet/commit/718e8b4dd93fc32c9a996109436a545078ec22e5))
+
 # [2.1.0](https://github.com/innovation-system/node-bacnet/compare/v2.0.1...v2.1.0) (2025-06-19)
 
 
