@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.3](https://github.com/innovation-system/node-bacnet/compare/v2.1.2...v2.1.3) (2025-06-25)
+
+
+### Bug Fixes
+
+* **dates:** fixes off-by-one error when encoding/decoding the month component of dates ([#38](https://github.com/innovation-system/node-bacnet/issues/38)) ([4ad1c19](https://github.com/innovation-system/node-bacnet/commit/4ad1c1996654dc39425e9838a80ccd1727e27b94))
+
 ## [2.1.2](https://github.com/innovation-system/node-bacnet/compare/v2.1.1...v2.1.2) (2025-06-24)
 
 
