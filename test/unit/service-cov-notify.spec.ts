@@ -8,8 +8,8 @@ import { ZERO_DATE } from '../../src/lib/asn1'
 test.describe('bacnet - Services layer COVNotify unit', () => {
 	test('should successfully encode and decode', () => {
 		const buffer = utils.getBuffer()
-		const date = ZERO_DATE
-		const time = ZERO_DATE
+		const date = new Date(ZERO_DATE)
+		const time = new Date(ZERO_DATE)
 		time.setMilliseconds(990)
 		CovNotify.encode(buffer, 7, 443, { type: 2, instance: 12 }, 120, [
 			{

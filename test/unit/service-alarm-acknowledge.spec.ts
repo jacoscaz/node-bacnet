@@ -9,9 +9,9 @@ import { ZERO_DATE } from '../../src/lib/asn1'
 test.describe('bacnet - Services layer AlarmAcknowledge unit', () => {
 	test('should successfully encode and decode with time timestamp', () => {
 		const buffer = utils.getBuffer()
-		const eventTime = ZERO_DATE
+		const eventTime = new Date(ZERO_DATE)
 		eventTime.setMilliseconds(990)
-		const ackTime = ZERO_DATE
+		const ackTime = new Date(ZERO_DATE)
 		ackTime.setMilliseconds(880)
 		AlarmAcknowledge.encode(
 			buffer,
