@@ -4,13 +4,14 @@ import assert from 'node:assert'
 import * as utils from './utils'
 import { TimeStamp } from '../../src'
 import { AlarmAcknowledge } from '../../src/lib/services'
+import { ZERO_DATE } from '../../src/lib/asn1'
 
 test.describe('bacnet - Services layer AlarmAcknowledge unit', () => {
 	test('should successfully encode and decode with time timestamp', () => {
 		const buffer = utils.getBuffer()
-		const eventTime = new Date(1, 1, 1)
+		const eventTime = ZERO_DATE
 		eventTime.setMilliseconds(990)
-		const ackTime = new Date(1, 1, 1)
+		const ackTime = ZERO_DATE
 		ackTime.setMilliseconds(880)
 		AlarmAcknowledge.encode(
 			buffer,

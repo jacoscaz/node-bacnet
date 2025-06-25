@@ -3,12 +3,13 @@ import assert from 'node:assert'
 
 import * as utils from './utils'
 import { WriteProperty } from '../../src/lib/services'
+import { ZERO_DATE } from '../../src/lib/asn1'
 
 test.describe('bacnet - Services layer WriteProperty unit', () => {
 	test('should successfully encode and decode', (t) => {
 		const buffer = utils.getBuffer()
-		const date = new Date(1, 1, 1)
-		const time = new Date(1, 1, 1)
+		const date = ZERO_DATE
+		const time = ZERO_DATE
 		time.setMilliseconds(990)
 		WriteProperty.encode(buffer, 31, 12, 80, 0xffffffff, 0, [
 			{ type: 0, value: null },
@@ -71,8 +72,8 @@ test.describe('bacnet - Services layer WriteProperty unit', () => {
 
 	test('should successfully encode and decode with defined priority', (t) => {
 		const buffer = utils.getBuffer()
-		const date = new Date(1, 1, 1)
-		const time = new Date(1, 1, 1)
+		const date = ZERO_DATE
+		const time = ZERO_DATE
 		time.setMilliseconds(990)
 		WriteProperty.encode(buffer, 31, 12, 80, 0xffffffff, 8, [
 			{ type: 0, value: null },
@@ -135,8 +136,8 @@ test.describe('bacnet - Services layer WriteProperty unit', () => {
 
 	test('should successfully encode and decode with defined array index', (t) => {
 		const buffer = utils.getBuffer()
-		const date = new Date(1, 1, 1)
-		const time = new Date(1, 1, 1)
+		const date = ZERO_DATE
+		const time = ZERO_DATE
 		time.setMilliseconds(990)
 		WriteProperty.encode(buffer, 31, 12, 80, 2, 0, [
 			{ type: 0, value: null },

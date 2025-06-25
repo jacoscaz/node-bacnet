@@ -108,10 +108,10 @@ test.describe('bacnet - ASN1 layer', () => {
 		test('should successfully encode with Date 1-1-1', () => {
 			const buffer = { buffer: Buffer.alloc(15, 10), offset: 0 }
 			const testBuffer = Buffer.alloc(15, 10)
-			const testBufferChange = Buffer.from([1, 1, 1, 5])
+			const testBufferChange = Buffer.from([1, 1, 1, 2])
 			testBuffer.fill(testBufferChange, 0, 4)
 			const bufferToCompare = { buffer: testBuffer, offset: 4 }
-			baAsn1.encodeBacnetDate(buffer, new Date(1, 1, 1))
+			baAsn1.encodeBacnetDate(buffer, new Date(1, 0, 1))
 			assert.deepStrictEqual(buffer, bufferToCompare)
 		})
 
@@ -128,12 +128,12 @@ test.describe('bacnet - ASN1 layer', () => {
 		})
 
 		test('should successfully encode with Date 2020-6-1', () => {
-			const buffer = { buffer: Buffer.alloc(15, 10), offset: 0 }
-			const testBuffer = Buffer.alloc(15, 10)
-			const testBufferChange = Buffer.from([120, 6, 1, 3])
+			const buffer = { buffer: Buffer.alloc(15, 0), offset: 0 }
+			const testBuffer = Buffer.alloc(15, 0)
+			const testBufferChange = Buffer.from([120, 6, 1, 1])
 			testBuffer.fill(testBufferChange, 0, 4)
 			const bufferToCompare = { buffer: testBuffer, offset: 4 }
-			baAsn1.encodeBacnetDate(buffer, new Date(2020, 6, 1))
+			baAsn1.encodeBacnetDate(buffer, new Date(2020, 5, 1))
 			assert.deepStrictEqual(buffer, bufferToCompare)
 		})
 	})

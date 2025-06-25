@@ -3,12 +3,13 @@ import assert from 'node:assert'
 
 import * as utils from './utils'
 import { CreateObject } from '../../src/lib/services'
+import { ZERO_DATE } from '../../src/lib/asn1'
 
 test.describe('bacnet - Services layer CreateObject unit', () => {
 	test('should successfully encode and decode', () => {
 		const buffer = utils.getBuffer()
-		const date = new Date(1, 1, 1)
-		const time = new Date(1, 1, 1)
+		const date = ZERO_DATE
+		const time = ZERO_DATE
 		time.setMilliseconds(990)
 		CreateObject.encode(buffer, { type: 1, instance: 10 }, [
 			{

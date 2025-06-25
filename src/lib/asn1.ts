@@ -48,6 +48,7 @@ import {
 
 export const START_YEAR = 1900
 export const MAX_YEARS = 256
+export const ZERO_DATE = new Date(START_YEAR, 0, 1)
 
 const getBuffer = (): EncodeBuffer => ({
 	buffer: Buffer.alloc(1472),
@@ -432,7 +433,7 @@ export const encodeApplicationBitstring = (
 }
 
 export const encodeBacnetDate = (buffer: EncodeBuffer, value: Date): void => {
-	if (value === new Date(1, 1, 1)) {
+	if (value === ZERO_DATE) {
 		buffer.buffer[buffer.offset++] = 0xff
 		buffer.buffer[buffer.offset++] = 0xff
 		buffer.buffer[buffer.offset++] = 0xff
@@ -447,7 +448,7 @@ export const encodeBacnetDate = (buffer: EncodeBuffer, value: Date): void => {
 	} else {
 		throw new Error(`invalid year: ${value.getFullYear()}`)
 	}
-	buffer.buffer[buffer.offset++] = value.getMonth()
+	buffer.buffer[buffer.offset++] = value.getMonth() + 1
 	buffer.buffer[buffer.offset++] = value.getDate()
 	buffer.buffer[buffer.offset++] = value.getDay() === 0 ? 7 : value.getDay()
 }
@@ -476,7 +477,7 @@ export const encodeApplicationTime = (
 }
 
 const bacappEncodeDatetime = (buffer: EncodeBuffer, value: Date): void => {
-	if (value !== new Date(1, 1, 1)) {
+	if (value !== ZERO_DATE) {
 		encodeApplicationDate(buffer, value)
 		encodeApplicationTime(buffer, value)
 	}
@@ -804,7 +805,7 @@ const bacappEncodeContextDatetime = (
 	tagNumber: number,
 	value: Date,
 ): void => {
-	if (value !== new Date(1, 1, 1)) {
+	if (value !== ZERO_DATE) {
 		encodeOpeningTag(buffer, tagNumber)
 		bacappEncodeDatetime(buffer, value)
 		encodeClosingTag(buffer, tagNumber)
@@ -1309,9 +1310,9 @@ export const decodeDate = (buffer: Buffer, offset: number): Decode<Date> => {
 		wday === 0xff &&
 		year - 1900 === 0xff
 	) {
-		date = new Date(1, 1, 1)
+		date = ZERO_DATE
 	} else {
-		date = new Date(year, month, day)
+		date = new Date(year, month - 1, day)
 	}
 	return {
 		len: 4,
@@ -1327,7 +1328,7 @@ const decodeDateSafe = (
 	if (lenValue !== 4) {
 		return {
 			len: lenValue,
-			value: new Date(1, 1, 1),
+			value: ZERO_DATE,
 		}
 	}
 	return decodeDate(buffer, offset)
@@ -1352,16 +1353,17 @@ export const decodeBacnetTime = (
 	buffer: Buffer,
 	offset: number,
 ): Decode<Date> => {
-	let value: Date
+	const value: Date = new Date(ZERO_DATE)
 	const hour = buffer[offset + 0]
 	const min = buffer[offset + 1]
 	const sec = buffer[offset + 2]
 	let hundredths = buffer[offset + 3]
-	if (hour === 0xff && min === 0xff && sec === 0xff && hundredths === 0xff) {
-		value = new Date(1, 1, 1)
-	} else {
+	if (hour !== 0xff || min !== 0xff || sec !== 0xff || hundredths !== 0xff) {
 		if (hundredths > 100) hundredths = 0
-		value = new Date(1, 1, 1, hour, min, sec, hundredths * 10)
+		value.setHours(hour)
+		value.setMinutes(min)
+		value.setSeconds(sec)
+		value.setMilliseconds(hundredths * 10)
 	}
 	return {
 		len: 4,
@@ -1375,7 +1377,7 @@ const decodeBacnetTimeSafe = (
 	len: number,
 ): Decode<Date> => {
 	if (len !== 4) {
-		return { len, value: new Date(1, 1, 1) }
+		return { len, value: ZERO_DATE }
 	}
 	return decodeBacnetTime(buffer, offset)
 }
@@ -1398,7 +1400,7 @@ export const decodeApplicationTime = (
 const decodeBacnetDatetime = (buffer: Buffer, offset: number): Decode<Date> => {
 	let len = 0
 	const rawDate = decodeApplicationDate(buffer, offset + len)
-	if (!rawDate) return { len: 0, value: new Date(1, 1, 1) }
+	if (!rawDate) return { len: 0, value: ZERO_DATE }
 
 	len += rawDate.len
 	const date = rawDate.value
