@@ -1,21 +1,22 @@
-# Node Bacnet
+# BACnet JS Client
 
-[![CI](https://github.com/innovation-system/node-bacnet/actions/workflows/ci.yml/badge.svg)](https://github.com/innovation-system/node-bacnet/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/@innovation-system/node-bacnet.svg)](https://www.npmjs.com/package/@innovation-system/node-bacnet)
-[![npm](https://img.shields.io/npm/dt/@innovation-system/node-bacnet.svg)](https://www.npmjs.com/package/@innovation-system/node-bacnet)
-[![Coverage Status](https://coveralls.io/repos/github/innovation-system/node-bacnet/badge.svg?branch=master)](https://coveralls.io/github/innovation-system/node-bacnet?branch=master)
+[![CI](https://github.com/bacnet-js/client/actions/workflows/ci.yml/badge.svg)](https://github.com/bacnet-js/client/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@bacnet-js/client.svg)](https://www.npmjs.com/package/@bacnet-js/client)
+[![npm](https://img.shields.io/npm/dt/@bacnet-js/client.svg)](https://www.npmjs.com/package/@bacnet-js/client)
+[![Coverage Status](https://coveralls.io/repos/github/bacnet-js/client/badge.svg?branch=master)](https://coveralls.io/github/bacnet-js/client?branch=master)
 
 A BACnet® protocol stack written in pure TypeScript from contributors and maintained by [Innovation-System](https://www.innovation-system.it/).
 BACnet® is a protocol to interact with building automation devices defined by ASHRAE.
 
 <!-- vscode-markdown-toc -->
-1. [Install](#Install)
-2. [Docs](#Docs)
-3. [Examples](#Examples)
-4. [Features](#Features)
-5. [Contribution](#Contribution)
-6. [License](#License)
-7. [Note](#Note)
+- [BACnet JS Client](#bacnet-js-client)
+ 	- [1. Install](#1-install)
+ 	- [2. Docs](#2-docs)
+ 	- [3. Examples](#3-examples)
+ 	- [4. Features](#4-features)
+ 	- [5. Contribution](#5-contribution)
+ 	- [6. License](#6-license)
+ 	- [7. Note](#7-note)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -26,7 +27,7 @@ BACnet® is a protocol to interact with building automation devices defined by A
 ## 1. <a name='Install'></a>Install
 
 Run the following command
-        npm install @innovation-system/node-bacnet
+        npm install @bacnet-js/client
 
 ## 2. <a name='Docs'></a>Docs
 
@@ -34,12 +35,12 @@ Documentation is available [here](https://bacnet-js.github.io/node-bacnet/).
 
 ## 3. <a name='Examples'></a>Examples
 
-Examples are available [here](https://github.com/innovation-system/node-bacnet/tree/master/examples)
+Examples are available [here](https://github.com/bacnet-js/client/tree/master/examples)
 
 ## 4. <a name='Features'></a>Features
 
 The BACnet standard defines a wide variety of services as part of it's
-specification. While Node bacnet tries to be as complete as possible,
+specification. While `@bacnet-js/client` tries to be as complete as possible,
 following services are already supported at this point in time:
 
 | Service                        |                                      Execute                                      | Handle                                                                        |
@@ -85,9 +86,9 @@ Special thanks to Fabio Huser for the [fundamental work](https://github.com/fh1c
 
 MIT
 
-* Copyright (c) 2025-present [Innovation-System](https://innovation-system.it/)
-* Copyright (c) 2022-2024 [PLUS for Node-RED](http://plus4nodered.com/)
-* origin Copyright (c) 2017-2021 Fabio Huser <fabio@fh1.ch>
+- Copyright (c) 2025-present [Innovation-System](https://innovation-system.it/)
+- Copyright (c) 2022-2024 [PLUS for Node-RED](http://plus4nodered.com/)
+- origin Copyright (c) 2017-2021 Fabio Huser <fabio@fh1.ch>
 
 ## 7. <a name='Note'></a>Note
 
