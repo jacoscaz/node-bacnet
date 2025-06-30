@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.4](https://github.com/bacnet-js/client/compare/v2.1.3...v2.1.4) (2025-06-30)
+
+
+### Bug Fixes
+
+* add BinaryPV enum to allowed enumerations for ApplicationTag.ENUMERATED data entries ([#40](https://github.com/bacnet-js/client/issues/40)) ([21267a5](https://github.com/bacnet-js/client/commit/21267a5982859185aada997a92737e17c1e2374c))
+
 ## [2.1.3](https://github.com/bacnet-js/client/compare/v2.1.2...v2.1.3) (2025-06-25)
 
 
