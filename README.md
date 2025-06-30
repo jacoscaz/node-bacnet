@@ -31,7 +31,7 @@ Run the following command
 
 ## 2. <a name='Docs'></a>Docs
 
-Documentation is available [here](https://bacnet-js.github.io/node-bacnet/).
+Documentation is available [here](https://bacnet-js.github.io/client/).
 
 ## 3. <a name='Examples'></a>Examples
 
