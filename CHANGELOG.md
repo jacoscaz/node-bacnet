@@ -1,5 +1,7 @@
 # Changelog
 
+## [2.1.5](https://github.com/bacnet-js/client/compare/v2.1.4...v2.1.5) (2025-07-04)
+
 ## [2.1.4](https://github.com/bacnet-js/client/compare/v2.1.3...v2.1.4) (2025-06-30)
 
 
