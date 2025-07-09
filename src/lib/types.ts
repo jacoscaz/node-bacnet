@@ -24,20 +24,75 @@ export interface EncodeBuffer {
 	offset: number
 }
 
+/**
+ * BACnet network address structure.
+ */
 export interface BACNetAddress {
-	type?: number
+	/**
+	 * The BACnet network, use 0 for local, 1 for remote, 0xffff for broadcast. Default is 0.
+	 */
 	net?: number
+	/** 0 for local, 1 for IP, 2 for MAC, etc. */
+	type?: number
+	/** IP address or MAC address of the target device. May differ from `address` when behind a proxy */
 	adr?: number[]
+	/** `<ip>:<port>` */
+	forwardedFrom?: string
+	/**
+	 * The BACnet address `<ip>:<port>`.
+	 */
 	address?: string
-	forwardedFrom?: string
 }
 
-export interface ReceiverAddress {
-	address: string
-	forwardedFrom?: string
-}
+/**
+ * Decoded Network Protocol Data Unit (NPDU) structure
+ * Represents the parsed contents of a BACnet NPDU header according to ASHRAE 135-2020 Section 6.2
+ */
+export interface DecodedNpdu {
+	/** Total length of the NPDU header in bytes */
+	len: number
 
-export type AddressParameter = string | ReceiverAddress
+	/**
+	 * NPDU control octet containing message type and flags
+	 * Bit flags from NpduControlBit enum indicating presence of optional fields
+	 */
+	funct: number
+
+	/**
+	 * Destination network address (optional)
+	 * Present when DESTINATION_SPECIFIED bit is set in funct
+	 * Contains network number and MAC address for routing
+	 */
+	destination?: BACNetAddress
+
+	/**
+	 * Source network address (optional)
+	 * Present when SOURCE_SPECIFIED bit is set in funct
+	 * Contains network number and MAC address of originating device
+	 */
+	source?: BACNetAddress
+
+	/**
+	 * Hop count for routed messages
+	 * Decremented by each router; message discarded when reaching 0
+	 * Only present when destination is specified
+	 */
+	hopCount: number
+
+	/**
+	 * Network layer message type
+	 * Values from NetworkLayerMessageType enum for network management messages
+	 * Only present when NETWORK_LAYER_MESSAGE bit is set in funct
+	 */
+	networkMsgType: number
+
+	/**
+	 * Vendor identifier for proprietary network messages
+	 * Only present for vendor-specific network messages (networkMsgType >= 0x80)
+	 * Identifies the vendor for proprietary message interpretation
+	 */
+	vendorId: number
+}
 
 export interface PropertyReference {
 	id: PropertyIdentifier
@@ -378,7 +433,6 @@ export interface ClientOptions {
 export interface WhoIsOptions {
 	lowLimit?: number
 	highLimit?: number
-	address?: string
 }
 
 export interface ServiceOptions {
@@ -475,10 +529,7 @@ export interface ReinitializeDeviceOptions extends ServiceOptions {
 export interface BACnetMessageHeader {
 	apduType: number
 	expectingReply: boolean
-	sender: {
-		address: string
-		forwardedFrom: string | null
-	}
+	sender: BACNetAddress
 	func?: number
 	confirmedService?: boolean
 }

@@ -1,5 +1,5 @@
 import { NpduControlBit, NetworkLayerMessageType } from './enum'
-import { EncodeBuffer, BACNetAddress, TargetResult } from './types'
+import { EncodeBuffer, TargetResult, DecodedNpdu, BACNetAddress } from './types'
 
 const BACNET_PROTOCOL_VERSION = 1
 const BACNET_ADDRESS_TYPES = {
@@ -52,17 +52,7 @@ export const decodeFunction = (
 export const decode = (
 	buffer: Buffer,
 	offset: number,
-):
-	| {
-			len: number
-			funct: number
-			destination?: BACNetAddress
-			source?: BACNetAddress
-			hopCount: number
-			networkMsgType: number
-			vendorId: number
-	  }
-	| undefined => {
+): DecodedNpdu | undefined => {
 	const orgOffset = offset
 	offset++
 	const funct = buffer[offset++]
@@ -110,16 +100,14 @@ export const decode = (
 export const encode = (
 	buffer: EncodeBuffer,
 	funct: number,
-	destination?: BACNetAddress | string,
+	destination?: BACNetAddress,
 	source?: BACNetAddress,
 	hopCount?: number,
 	networkMsgType?: number,
 	vendorId?: number,
 ): void => {
-	const isDestinationAddress = destination && typeof destination !== 'string'
-	const hasDestination =
-		isDestinationAddress && (destination as BACNetAddress).net > 0
-	const hasSource = source && source.net > 0 && source.net !== 0xffff
+	const hasDestination = destination?.net > 0
+	const hasSource = source?.net > 0 && source.net !== 0xffff
 
 	buffer.buffer[buffer.offset++] = BACNET_PROTOCOL_VERSION
 	buffer.buffer[buffer.offset++] =
@@ -128,7 +116,7 @@ export const encode = (
 		(hasSource ? NpduControlBit.SOURCE_SPECIFIED : 0)
 
 	if (hasDestination) {
-		encodeTarget(buffer, destination as BACNetAddress)
+		encodeTarget(buffer, destination)
 	}
 
 	if (hasSource) {
