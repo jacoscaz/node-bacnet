@@ -111,12 +111,7 @@ import {
 	PropertyIdentifier,
 	ReadRangeType,
 } from './enum'
-import {
-	ASYNC_METHODS,
-	AsyncMethods,
-	AsyncVersion,
-	promisify,
-} from './async-types'
+
 import { Buffer } from 'buffer'
 import { buffer } from 'stream/consumers'
 const debug = debugLib('bacnet:client:debug')
@@ -219,26 +214,8 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 
 	private _segmentStore: Buffer[] = []
 
-	// Async property that contains promisified versions
-	public readonly async: AsyncMethods<this>
-
 	constructor(options?: ClientOptions) {
 		super()
-
-		// Create the async property with promisified methods
-		this.async = {} as AsyncMethods<this>
-
-		// Automatically create async versions of specified methods
-		ASYNC_METHODS.forEach((methodName) => {
-			if (methodName in this && typeof this[methodName] === 'function') {
-				;(this.async as any)[methodName] = promisify(
-					this,
-					this[methodName],
-				)
-			} else {
-				throw new Error(`Method ${methodName} is not a function`)
-			}
-		})
 
 		options = options || {}
 
