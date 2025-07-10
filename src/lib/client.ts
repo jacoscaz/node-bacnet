@@ -553,12 +553,16 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 					HasInvokeId
 				offset += msg.len
 				length -= msg.len
-				this._requestManager.resolve((msg as HasInvokeId).invokeId, null, {
-					msg,
-					buffer,
-					offset: offset + msg.len,
-					length: length - msg.len,
-				})
+				this._requestManager.resolve(
+					(msg as HasInvokeId).invokeId,
+					null,
+					{
+						msg,
+						buffer,
+						offset: offset + msg.len,
+						length: length - msg.len,
+					},
+				)
 				break
 
 			case PduType.COMPLEX_ACK:
