@@ -164,26 +164,24 @@ const confirmedServiceMap: BACnetEventsMap = {
 }
 
 class Deferred<T> {
-  
-  resolve: (value: T) => void;
-  reject: (err: Error) => void;
-  
-  promise: Promise<T>;
+	resolve: (value: T) => void
+	reject: (err: Error) => void
 
-  constructor() {
-    this.promise = new Promise((resolve, reject) => {
-      this.resolve = resolve;
-      this.reject = reject;
-    });
-  }
-  
+	promise: Promise<T>
+
+	constructor() {
+		this.promise = new Promise((resolve, reject) => {
+			this.resolve = resolve
+			this.reject = reject
+		})
+	}
 }
 
-interface NetworkOpResult { 
-	msg: any,
-	buffer: Buffer,
-	offset: number,
-	length: number,
+interface NetworkOpResult {
+	msg: any
+	buffer: Buffer
+	offset: number
+	length: number
 }
 
 /**
@@ -256,27 +254,35 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		return id - 1
 	}
 
-  private _resolveDeferred(id: number, err: Error, result?: undefined): void;
-  private _resolveDeferred(id: number, err: null | undefined, result: NetworkOpResult): void;
-	private _resolveDeferred(id: number, err: Error | null | undefined, result?: NetworkOpResult): void {
+	private _resolveDeferred(id: number, err: Error, result?: undefined): void
+	private _resolveDeferred(
+		id: number,
+		err: null | undefined,
+		result: NetworkOpResult,
+	): void
+	private _resolveDeferred(
+		id: number,
+		err: Error | null | undefined,
+		result?: NetworkOpResult,
+	): void {
 		const deferred = this._invokeStore[id]
-    if (deferred) {
-      trace(`InvokeId ${id} found -> call callback`)
-      delete this._invokeStore[id]
-      if (err) {
-        deferred.reject(err)
-      } else {
-        deferred.resolve(result)
-      }
-    } else { 
-  		debug('InvokeId', id, 'not found -> drop package')
-  		trace(`Stored invokeId: ${Object.keys(this._invokeStore)}`)
-    }
+		if (deferred) {
+			trace(`InvokeId ${id} found -> call callback`)
+			delete this._invokeStore[id]
+			if (err) {
+				deferred.reject(err)
+			} else {
+				deferred.resolve(result)
+			}
+		} else {
+			debug('InvokeId', id, 'not found -> drop package')
+			trace(`Stored invokeId: ${Object.keys(this._invokeStore)}`)
+		}
 	}
 
 	private _addDeferred(id: number): Promise<NetworkOpResult> {
-    const deferred = new Deferred<NetworkOpResult>();
-    this._invokeStore[id] = deferred;
+		const deferred = new Deferred<NetworkOpResult>()
+		this._invokeStore[id] = deferred
 		trace(
 			`InvokeId ${id} callback added -> timeout set to ${this._settings.apduTimeout}.`, // Stack: ${new Error().stack}`,
 		)
@@ -287,11 +293,11 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		trace(
 			`InvokeId ${id} callback added -> timeout set to ${this._settings.apduTimeout}.`, // Stack: ${new Error().stack}`,
 		)
-    return deferred.promise.finally(() => { 
-      delete this._invokeStore[id]
+		return deferred.promise.finally(() => {
+			delete this._invokeStore[id]
 			clearTimeout(timeout)
-      debug(`InvokeId ${id} deferred called`)
-    });
+			debug(`InvokeId ${id} deferred called`)
+		})
 	}
 
 	private _getApduBuffer(address?: BACNetAddress): EncodeBuffer {
@@ -952,7 +958,6 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		propertyId: number,
 		options: ReadPropertyOptions,
 	): Promise<DecodeAcknowledgeSingleResult> {
-
 		const settings: ReadPropertyOptions = {
 			maxSegments:
 				(options as ReadPropertyOptions).maxSegments ||
@@ -1005,7 +1010,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		)
 		this.sendBvlc(receiver, buffer)
 
-    const data = await this._addDeferred(settings.invokeId);
+		const data = await this._addDeferred(settings.invokeId)
 
 		const result = ReadProperty.decodeAcknowledge(
 			data.buffer,
@@ -1016,7 +1021,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 			throw new Error('INVALID_DECODING')
 		}
 
-    return result;
+		return result
 	}
 
 	/**
@@ -1135,7 +1140,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		if (!result) {
 			throw new Error('INVALID_DECODING')
 		}
-    return result
+		return result
 	}
 
 	/**
@@ -1146,7 +1151,6 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		values: WritePropertyMultipleObject[],
 		options: ServiceOptions,
 	): Promise<void> {
-
 		const settings = {
 			maxSegments:
 				(options as ServiceOptions).maxSegments ||
@@ -1998,7 +2002,6 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		acknowledgmentFilter: number,
 		options: EnrollmentOptions,
 	): Promise<EnrollmentSummaryAcknowledge> {
-
 		const settings: ServiceOptions = {
 			maxSegments: options.maxSegments || MaxSegmentsAccepted.SEGMENTS_65,
 			maxApdu: options.maxApdu || MaxApduLengthAccepted.OCTETS_1476,

@@ -6,17 +6,17 @@ import * as utils from './utils'
 test.describe('bacnet - readFile integration', () => {
 	test('should return a timeout error if no device is available', async (t) => {
 		const client = new utils.BacnetClient({ apduTimeout: 200 })
-    try {
-      await client.readFile(
-        { address: '127.0.0.2' },
-        { type: 10, instance: 100 },
-        0,
-        100,
-        {},
-      )
-    } catch (err) { 
+		try {
+			await client.readFile(
+				{ address: '127.0.0.2' },
+				{ type: 10, instance: 100 },
+				0,
+				100,
+				{},
+			)
+		} catch (err) {
 			assert.strictEqual((err as Error).message, 'ERR_TIMEOUT')
 			client.close()
-    }
+		}
 	})
 })

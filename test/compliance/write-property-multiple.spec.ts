@@ -93,7 +93,8 @@ test.describe('bacnet - write property multiple compliance', () => {
 		]
 
 		let error: Error
-		await bacnetClient.writePropertyMultiple(discoveredAddress, values, {})
+		await bacnetClient
+			.writePropertyMultiple(discoveredAddress, values, {})
 			.catch((err: Error) => {
 				error = err
 			})

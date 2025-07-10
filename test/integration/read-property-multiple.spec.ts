@@ -5,7 +5,7 @@ import * as utils from './utils'
 import { ASN1_ARRAY_ALL } from '../../src'
 
 test.describe('bacnet - readPropertyMultiple integration', () => {
-  test('should return a timeout error if no device is available', async (t) => {
+	test('should return a timeout error if no device is available', async (t) => {
 		const client = new utils.BacnetClient({ apduTimeout: 200 })
 		const requestArray = [
 			{
@@ -13,16 +13,16 @@ test.describe('bacnet - readPropertyMultiple integration', () => {
 				properties: [{ id: 8, index: ASN1_ARRAY_ALL }],
 			},
 		]
-    try {
-      await client.readPropertyMultiple(
-        { address: '127.0.0.2' },
-        requestArray,
-        {},
-      )
-    } catch (err) { 
-      assert.strictEqual((err as Error).message, 'ERR_TIMEOUT')
-			client.close()      
-    }
+		try {
+			await client.readPropertyMultiple(
+				{ address: '127.0.0.2' },
+				requestArray,
+				{},
+			)
+		} catch (err) {
+			assert.strictEqual((err as Error).message, 'ERR_TIMEOUT')
+			client.close()
+		}
 	})
 
 	test('should successfully decode a structured view', async (t) => {
@@ -45,83 +45,70 @@ test.describe('bacnet - readPropertyMultiple integration', () => {
 			{},
 		)
 
-		const object = utils.propertyFormater(
- 			response.values[0].values,
-		)
+		const object = utils.propertyFormater(response.values[0].values)
 		assert.deepStrictEqual(response.values[0].objectId, {
- 			type: 29,
- 			instance: 31,
+			type: 29,
+			instance: 31,
 		})
 		assert.deepStrictEqual(object[28], [
- 			{
+			{
 				value: 'Collection of lighting presence detector',
 				type: 7,
 				encoding: 0,
- 			},
+			},
 		])
 		assert.deepStrictEqual(object[75], [
- 			{ value: { type: 29, instance: 31 }, type: 12 },
+			{ value: { type: 29, instance: 31 }, type: 12 },
 		])
 		assert.deepStrictEqual(object[77], [
- 			{
+			{
 				value: "Zählerweg'Floor 4'RSegTV'Lgt'PscOp'LgtPscDetCol",
 				type: 7,
 				encoding: 0,
- 			},
+			},
 		])
 		assert.deepStrictEqual(object[79], [{ value: 29, type: 9 }])
 		assert.deepStrictEqual(object[168], [
- 			{
+			{
 				value: '7-BA-RDS1-041-SBCv13.20',
 				type: 7,
 				encoding: 0,
- 			},
+			},
 		])
 		assert.deepStrictEqual(object[207], [
- 			{ value: '', type: 7, encoding: 0 },
+			{ value: '', type: 7, encoding: 0 },
 		])
 		assert.deepStrictEqual(object[208], [{ value: 8, type: 9 }])
 		assert.deepStrictEqual(object[210], [
- 			{ value: 'LgtPscDetRs', type: 7, encoding: 0 },
- 			{ value: 'PscDet(*)', type: 7, encoding: 0 },
+			{ value: 'LgtPscDetRs', type: 7, encoding: 0 },
+			{ value: 'PscDet(*)', type: 7, encoding: 0 },
 		])
 		assert.deepStrictEqual(object[211], [
- 			{
+			{
 				value: {
- 					value: { type: 5, instance: 0 },
- 					type: 12,
+					value: { type: 5, instance: 0 },
+					type: 12,
 				},
 				type: 118,
- 			},
- 			{
+			},
+			{
 				value: {
- 					value: { type: 3, instance: 0 },
- 					type: 12,
+					value: { type: 3, instance: 0 },
+					type: 12,
 				},
 				type: 118,
- 			},
+			},
 		])
-		assert.deepStrictEqual(object[4930], [
- 			{ value: 0, type: 9 },
-		])
-		assert.deepStrictEqual(object[4941], [
- 			{ value: 6, type: 9 },
-		])
-		assert.deepStrictEqual(object[5030], [
- 			{ value: 0, type: 2 },
-		])
-		assert.deepStrictEqual(object[5053], [
- 			{ value: 0, type: 9 },
-		])
+		assert.deepStrictEqual(object[4930], [{ value: 0, type: 9 }])
+		assert.deepStrictEqual(object[4941], [{ value: 6, type: 9 }])
+		assert.deepStrictEqual(object[5030], [{ value: 0, type: 2 }])
+		assert.deepStrictEqual(object[5053], [{ value: 0, type: 9 }])
 		assert.deepStrictEqual(object[5086], [
- 			{ value: { value: [1], bitsUsed: 1 }, type: 8 },
- 			{ value: { value: [0], bitsUsed: 1 }, type: 8 },
+			{ value: { value: [1], bitsUsed: 1 }, type: 8 },
+			{ value: { value: [0], bitsUsed: 1 }, type: 8 },
 		])
-		assert.deepStrictEqual(object[5102], [
- 			{ value: 41, type: 9 },
-		])
+		assert.deepStrictEqual(object[5102], [{ value: 41, type: 9 }])
 		client.close()
-				
 	})
 
 	test('should successfully decode a value object', async (t) => {
@@ -143,15 +130,12 @@ test.describe('bacnet - readPropertyMultiple integration', () => {
 			requestArray,
 			{},
 		)
-				
 
 		assert.deepStrictEqual(response.values[0].objectId, {
 			type: 19,
 			instance: 10,
 		})
-		const object = utils.propertyFormater(
-			response.values[0].values,
-		)
+		const object = utils.propertyFormater(response.values[0].values)
 		assert.deepStrictEqual(object[28], [
 			{ value: 'Sensor', type: 7, encoding: 0 },
 		])
@@ -168,9 +152,7 @@ test.describe('bacnet - readPropertyMultiple integration', () => {
 			},
 		])
 		assert.deepStrictEqual(object[79], [{ value: 19, type: 9 }])
-		assert.deepStrictEqual(object[81], [
-			{ value: false, type: 1 },
-		])
+		assert.deepStrictEqual(object[81], [{ value: false, type: 1 }])
 		assert.deepStrictEqual(object[85], [{ value: 1, type: 2 }])
 		assert.deepStrictEqual(object[103], [{ value: 0, type: 9 }])
 		assert.deepStrictEqual(object[110], [
@@ -197,18 +179,10 @@ test.describe('bacnet - readPropertyMultiple integration', () => {
 				encoding: 0,
 			},
 		])
-		assert.deepStrictEqual(object[4930], [
-			{ value: 0, type: 9 },
-		])
-		assert.deepStrictEqual(object[4941], [
-			{ value: 5, type: 9 },
-		])
-		assert.deepStrictEqual(object[5000], [
-			{ value: 0, type: 9 },
-		])
-		assert.deepStrictEqual(object[5001], [
-			{ value: 0, type: 9 },
-		])
+		assert.deepStrictEqual(object[4930], [{ value: 0, type: 9 }])
+		assert.deepStrictEqual(object[4941], [{ value: 5, type: 9 }])
+		assert.deepStrictEqual(object[5000], [{ value: 0, type: 9 }])
+		assert.deepStrictEqual(object[5001], [{ value: 0, type: 9 }])
 		assert.deepStrictEqual(object[5039], [
 			{ value: '0.2.249', type: 7, encoding: 0 },
 		])
@@ -218,9 +192,7 @@ test.describe('bacnet - readPropertyMultiple integration', () => {
 		assert.deepStrictEqual(object[5092], [
 			{ value: 'PL-1:DL=1;', type: 7, encoding: 0 },
 		])
-		assert.deepStrictEqual(object[5094], [
-			{ value: 3, type: 2 },
-		])
+		assert.deepStrictEqual(object[5094], [{ value: 3, type: 2 }])
 		assert.deepStrictEqual(object[5100], [
 			{ value: '00010043eddc', type: 7, encoding: 0 },
 		])
@@ -231,19 +203,12 @@ test.describe('bacnet - readPropertyMultiple integration', () => {
 				encoding: 0,
 			},
 		])
-		assert.deepStrictEqual(object[5102], [
-			{ value: 24, type: 9 },
-		])
+		assert.deepStrictEqual(object[5102], [{ value: 24, type: 9 }])
 		assert.deepStrictEqual(object[5103], [
 			{ value: '', type: 7, encoding: 0 },
 		])
-		assert.deepStrictEqual(object[5104], [
-			{ value: 0, type: 9 },
-		])
-		assert.deepStrictEqual(object[5107], [
-			{ value: 1, type: 2 },
-		])
+		assert.deepStrictEqual(object[5104], [{ value: 0, type: 9 }])
+		assert.deepStrictEqual(object[5107], [{ value: 1, type: 2 }])
 		client.close()
-
 	})
 })
