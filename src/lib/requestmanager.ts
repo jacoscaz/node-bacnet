@@ -1,3 +1,4 @@
+import assert from 'node:assert'
 import debugLib from 'debug'
 
 import { type NetworkOpResult } from './types'
@@ -17,30 +18,52 @@ class Deferred<T> {
 	}
 }
 
+interface RequestEntry {
+	invokeId: number
+	deferred: Deferred<NetworkOpResult>
+	expiresAt: number
+}
+
+/**
+ * In order to keep O(n) operations outside of hot code paths, the values
+ * within the `#invokeIds` array are only guaranteed to match the keys of
+ * the `#entries` index right after each call to `clear()`. At any other
+ * time, the `#invokeIds` array may contain ids of requests that have already
+ * been expired or resolved.
+ */
 export class RequestManager {
-	#entries: Map<
-		number,
-		{ deferred: Deferred<NetworkOpResult>; createdAt: number }
-	>
+	/** Index of pending requests by invokeId */
+	requestsById: Map<number, RequestEntry>
+
+	/** Array of requests ordered by creation time */
+	#requestsByTime: RequestEntry[]
+
 	#timeout: number
 	#clearTimeout: NodeJS.Timeout | null
 
 	constructor(timeout: number) {
-		this.#entries = new Map()
+		this.requestsById = new Map()
+		this.#requestsByTime = []
 		this.#timeout = timeout
 		this.#clearTimeout = null
 	}
 
-	add(id: number): Promise<NetworkOpResult> {
+	add(invokeId: number): Promise<NetworkOpResult> {
 		const deferred = new Deferred<NetworkOpResult>()
-		this.#entries.set(id, { deferred, createdAt: Date.now() })
+		const request = {
+			invokeId,
+			deferred,
+			expiresAt: Date.now() + this.#timeout,
+		}
+		this.requestsById.set(invokeId, request)
+		this.#requestsByTime.push(request)
 		this.#scheduleClear()
 		trace(
-			`InvokeId ${id} callback added -> timeout set to ${this.#timeout}.`, // Stack: ${new Error().stack}`,
+			`InvokeId ${invokeId} callback added -> timeout set to ${this.#timeout}.`, // Stack: ${new Error().stack}`,
 		)
 		return deferred.promise.finally(() => {
-			debug(`InvokeId ${id} deferred called`)
-			this.#entries.delete(id)
+			debug(`InvokeId ${invokeId} deferred called`)
+			this.requestsById.delete(invokeId)
 		})
 	}
 
@@ -51,18 +74,18 @@ export class RequestManager {
 		err: Error | null | undefined,
 		result?: NetworkOpResult,
 	) {
-		const entry = this.#entries.get(id)
-		if (entry) {
+		const request = this.requestsById.get(id)
+		if (request) {
 			trace(`InvokeId ${id} found -> call callback`)
-			this.#entries.delete(id)
+			this.requestsById.delete(id)
 			if (err) {
-				entry.deferred.reject(err)
+				request.deferred.reject(err)
 			} else {
-				entry.deferred.resolve(result)
+				request.deferred.resolve(result)
 			}
 		} else {
 			debug('InvokeId', id, 'not found -> drop package')
-			trace(`Stored invokeId: ${Array.from(this.#entries.keys())}`)
+			trace(`Stored invokeId: ${Array.from(this.requestsById.keys())}`)
 		}
 	}
 
@@ -72,23 +95,40 @@ export class RequestManager {
 			this.#clearTimeout = null
 		}
 		const now = Date.now()
-		const qty = this.#entries.size
-		this.#entries.forEach(({ deferred, createdAt }, id) => {
-			if (force || now - createdAt > this.#timeout) {
-				deferred.reject(new Error('ERR_TIMEOUT'))
-				this.#entries.delete(id)
+		const qty = this.#requestsByTime.length
+		// filter() is usually faster than splice() for small-ish arrays
+		this.#requestsByTime = this.#requestsByTime.filter((request) => {
+			if (!this.requestsById.has(request.invokeId)) {
+				// Request has already been resolved or expired
+				return false
 			}
+			if (force || request.expiresAt <= now) {
+				// Request has timed out or we forcefully time it out
+				request.deferred.reject(new Error('ERR_TIMEOUT'))
+				this.requestsById.delete(request.invokeId)
+				return false
+			}
+			// Request is still pending
+			return true
 		})
-		debug(`Cleared ${qty - this.#entries.size} entries.`)
-		debug(`There are ${this.#entries.size} entries pending.`)
-		if (!force && this.#entries.size > 0) {
+		assert(
+			this.requestsById.size === this.#requestsByTime.length,
+			`Index size mismatch  ${this.requestsById.size} !== ${this.#requestsByTime.length}`,
+		)
+		debug(`Cleared ${qty - this.#requestsByTime.length} entries.`)
+		debug(`There are ${this.#requestsByTime.length} entries pending.`)
+		if (!force) {
 			this.#scheduleClear()
 		}
 	}
 
 	#scheduleClear() {
-		if (this.#clearTimeout === null) {
-			this.#clearTimeout = setTimeout(this.clear, this.#timeout)
+		if (this.#clearTimeout === null && this.#requestsByTime.length > 0) {
+			// setTimeout() effectively becomes like setImmediate() if the delay value is 0 or negative
+			this.#clearTimeout = setTimeout(
+				this.clear,
+				this.#requestsByTime[0].expiresAt - Date.now() + 10,
+			)
 		}
 	}
 }
