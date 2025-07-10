@@ -898,7 +898,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		receiver: BACNetAddress,
 		objectId: BACNetObjectID,
 		propertyId: number,
-		options: ReadPropertyOptions,
+		options: ReadPropertyOptions = {},
 	): Promise<DecodeAcknowledgeSingleResult> {
 		const settings: ReadPropertyOptions = {
 			maxSegments:
@@ -1034,7 +1034,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 	async readPropertyMultiple(
 		receiver: BACNetAddress,
 		propertiesArray: BACNetReadAccessSpecification[],
-		options: ServiceOptions,
+		options: ServiceOptions = {},
 	): Promise<DecodeAcknowledgeMultipleResult> {
 		const settings = {
 			maxSegments:
@@ -1091,7 +1091,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 	async writePropertyMultiple(
 		receiver: BACNetAddress,
 		values: WritePropertyMultipleObject[],
-		options: ServiceOptions,
+		options: ServiceOptions = {},
 	): Promise<void> {
 		const settings = {
 			maxSegments:
@@ -1136,7 +1136,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 			property: PropertyReference
 			value: TypedValue[]
 		}>,
-		options: ServiceOptions,
+		options: ServiceOptions = {},
 	): Promise<void> {
 		const settings = {
 			maxSegments:
@@ -1188,7 +1188,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		receiver: BACNetAddress,
 		timeDuration: number,
 		enableDisable: number,
-		options: DeviceCommunicationOptions,
+		options: DeviceCommunicationOptions = {},
 	): Promise<void> {
 		const settings = {
 			maxSegments:
@@ -1234,7 +1234,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 	async reinitializeDevice(
 		receiver: BACNetAddress,
 		state: number,
-		options: ReinitializeDeviceOptions,
+		options: ReinitializeDeviceOptions = {},
 	): Promise<void> {
 		const settings = {
 			maxSegments:
@@ -1277,7 +1277,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		objectId: BACNetObjectID,
 		position: number,
 		fileBuffer: number[][],
-		options: ServiceOptions,
+		options: ServiceOptions = {},
 	): Promise<DecodeAtomicWriteFileResult> {
 		const settings = {
 			maxSegments:
@@ -1327,7 +1327,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		objectId: BACNetObjectID,
 		position: number,
 		count: number,
-		options: ServiceOptions,
+		options: ServiceOptions = {},
 	): Promise<DecodeAtomicReadFileResult> {
 		const settings = {
 			maxSegments:
@@ -1376,7 +1376,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		objectId: BACNetObjectID,
 		idxBegin: number,
 		quantity: number,
-		options: ServiceOptions,
+		options: ServiceOptions = {},
 	): Promise<ReadRangeAcknowledge> {
 		const settings = {
 			maxSegments:
@@ -1437,7 +1437,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		cancel: boolean,
 		issueConfirmedNotifications: boolean,
 		lifetime: number,
-		options: ServiceOptions,
+		options: ServiceOptions = {},
 	): Promise<void> {
 		const settings = {
 			maxSegments: options.maxSegments || MaxSegmentsAccepted.SEGMENTS_65,
@@ -1482,7 +1482,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		subscribeId: number,
 		cancel: boolean,
 		issueConfirmedNotifications: boolean,
-		options: ServiceOptions,
+		options: ServiceOptions = {},
 	): Promise<void> {
 		const settings = {
 			maxSegments: options.maxSegments || MaxSegmentsAccepted.SEGMENTS_65,
@@ -1573,7 +1573,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 			}
 			value: BACNetAppData[]
 		}>,
-		options: ServiceOptions,
+		options: ServiceOptions = {},
 	): Promise<void> {
 		const settings = {
 			maxSegments: options.maxSegments || MaxSegmentsAccepted.SEGMENTS_65,
@@ -1607,7 +1607,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 	public async deleteObject(
 		receiver: BACNetAddress,
 		objectId: BACNetObjectID,
-		options: ServiceOptions,
+		options: ServiceOptions = {},
 	): Promise<void> {
 		const settings = {
 			maxSegments: options.maxSegments || MaxSegmentsAccepted.SEGMENTS_65,
@@ -1646,7 +1646,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 			index: number
 		},
 		values: BACNetAppData[],
-		options: ServiceOptions,
+		options: ServiceOptions = {},
 	): Promise<void> {
 		const settings = {
 			maxSegments: options.maxSegments || MaxSegmentsAccepted.SEGMENTS_65,
@@ -1691,7 +1691,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 			index: number
 		},
 		values: BACNetAppData[],
-		options: ServiceOptions,
+		options: ServiceOptions = {},
 	): Promise<void> {
 		const settings = {
 			maxSegments: options.maxSegments || MaxSegmentsAccepted.SEGMENTS_65,
@@ -1730,7 +1730,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 	 */
 	async getAlarmSummary(
 		receiver: BACNetAddress,
-		options: ServiceOptions,
+		options: ServiceOptions = {},
 	): Promise<BACNetAlarm[]> {
 		const settings: ServiceOptions = {
 			maxSegments:
@@ -1777,7 +1777,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 	async getEventInformation(
 		receiver: BACNetAddress,
 		objectId: BACNetObjectID,
-		options: ServiceOptions,
+		options: ServiceOptions = {},
 	): Promise<BACNetEventInformation[]> {
 		const settings: ServiceOptions = {
 			maxSegments:
@@ -1834,7 +1834,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		ackText: string,
 		evTimeStamp: BACNetTimestamp,
 		ackTimeStamp: BACNetTimestamp,
-		options: ServiceOptions,
+		options: ServiceOptions = {},
 	): Promise<void> {
 		const settings: ServiceOptions = {
 			maxSegments:
@@ -1883,7 +1883,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		vendorId: number,
 		serviceNumber: number,
 		data: number[],
-		options: ServiceOptions,
+		options: ServiceOptions = {},
 	): Promise<void> {
 		const settings: ServiceOptions = {
 			maxSegments:
@@ -1942,7 +1942,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 	async getEnrollmentSummary(
 		receiver: BACNetAddress,
 		acknowledgmentFilter: number,
-		options: EnrollmentOptions,
+		options: EnrollmentOptions = {},
 	): Promise<EnrollmentSummaryAcknowledge> {
 		const settings: ServiceOptions = {
 			maxSegments: options.maxSegments || MaxSegmentsAccepted.SEGMENTS_65,
@@ -2011,7 +2011,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 	async confirmedEventNotification(
 		receiver: BACNetAddress,
 		eventNotification: EventNotifyDataParams,
-		options: ServiceOptions,
+		options: ServiceOptions = {},
 	): Promise<void> {
 		const settings: ServiceOptions = {
 			maxSegments:
