@@ -204,9 +204,12 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 
 	private _invokeCounter = 1
 
-	private _invokeStore: {
-		[key: number]: Deferred<NetworkOpResult>
-	} = {}
+	private _invokeStore: Map<
+		number,
+		{ deferred: Deferred<NetworkOpResult>; invokedAt: number }
+	>
+
+	private _clearInvokeStoreTimeout: NodeJS.Timeout | null
 
 	private _lastSequenceNumber = 0
 
@@ -216,6 +219,9 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		super()
 
 		options = options || {}
+
+		this._invokeStore = new Map()
+		this._clearInvokeStoreTimeout = null
 
 		this._settings = {
 			port: options.port || 47808,
@@ -244,6 +250,29 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		this._transport.open()
 	}
 
+	private _maybeScheduleClearInvokeStore() {
+		if (this._clearInvokeStoreTimeout === null) {
+			this._clearInvokeStoreTimeout = setTimeout(
+				this._maybeClearInvokeStore,
+				this._settings.apduTimeout,
+			)
+		}
+	}
+
+	private _maybeClearInvokeStore = () => {
+		this._clearInvokeStoreTimeout = null
+		const now = Date.now()
+		this._invokeStore.forEach(({ deferred, invokedAt }, id) => {
+			if (now - invokedAt > this._settings.apduTimeout) {
+				deferred.reject(new Error('ERR_TIMEOUT'))
+				this._invokeStore.delete(id)
+			}
+		})
+		if (this._invokeStore.size > 0) {
+			this._maybeScheduleClearInvokeStore()
+		}
+	}
+
 	private _send(buffer: EncodeBuffer, receiver?: BACNetAddress) {
 		this._transport.send(buffer.buffer, buffer.offset, receiver?.address)
 	}
@@ -265,14 +294,14 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		err: Error | null | undefined,
 		result?: NetworkOpResult,
 	): void {
-		const deferred = this._invokeStore[id]
-		if (deferred) {
+		const storeEntry = this._invokeStore.get(id)
+		if (storeEntry) {
 			trace(`InvokeId ${id} found -> call callback`)
-			delete this._invokeStore[id]
+			this._invokeStore.delete(id)
 			if (err) {
-				deferred.reject(err)
+				storeEntry.deferred.reject(err)
 			} else {
-				deferred.resolve(result)
+				storeEntry.deferred.resolve(result)
 			}
 		} else {
 			debug('InvokeId', id, 'not found -> drop package')
@@ -282,20 +311,16 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 
 	private _addDeferred(id: number): Promise<NetworkOpResult> {
 		const deferred = new Deferred<NetworkOpResult>()
-		this._invokeStore[id] = deferred
+		this._invokeStore.set(id, { deferred, invokedAt: Date.now() })
 		trace(
 			`InvokeId ${id} callback added -> timeout set to ${this._settings.apduTimeout}.`, // Stack: ${new Error().stack}`,
 		)
-		const timeout = setTimeout(
-			deferred.reject.bind(null, new Error('ERR_TIMEOUT')),
-			this._settings.apduTimeout,
-		)
+		this._maybeScheduleClearInvokeStore()
 		trace(
 			`InvokeId ${id} callback added -> timeout set to ${this._settings.apduTimeout}.`, // Stack: ${new Error().stack}`,
 		)
 		return deferred.promise.finally(() => {
-			delete this._invokeStore[id]
-			clearTimeout(timeout)
+			this._invokeStore.delete(id)
 			debug(`InvokeId ${id} deferred called`)
 		})
 	}
