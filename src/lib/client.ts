@@ -2229,6 +2229,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 	 * Unloads the current bacnet instance and closes the underlying UDP socket.
 	 */
 	close(): void {
+		this._requestManager.clear(true)
 		this._transport.close()
 	}
 

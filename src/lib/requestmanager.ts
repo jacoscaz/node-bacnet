@@ -66,14 +66,14 @@ export class RequestManager {
 		}
 	}
 
-	clear = () => {
+	clear = (force?: boolean) => {
 		if (this.#clearTimeout !== null) {
 			clearTimeout(this.#clearTimeout)
 			this.#clearTimeout = null
 		}
 		const now = Date.now()
 		this.#entries.forEach(({ deferred, createdAt }, id) => {
-			if (now - createdAt > this.#timeout) {
+			if (force || now - createdAt > this.#timeout) {
 				deferred.reject(new Error('ERR_TIMEOUT'))
 				this.#entries.delete(id)
 			}
