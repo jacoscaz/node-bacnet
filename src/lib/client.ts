@@ -111,9 +111,7 @@ import {
 	PropertyIdentifier,
 	ReadRangeType,
 } from './enum'
-import { Deferred } from './utils'
-import { InvokeStore } from './invokestore'
-import { NetworkOpResult } from './types'
+import { RequestManager } from './requestmanager'
 
 import { Buffer } from 'buffer'
 import { buffer } from 'stream/consumers'
@@ -186,7 +184,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 
 	private _invokeCounter = 1
 
-	private _invokeStore: InvokeStore
+	private _requestManager: RequestManager
 
 	private _lastSequenceNumber = 0
 
@@ -205,7 +203,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 			apduTimeout: options.apduTimeout || 3000,
 		}
 
-		this._invokeStore = new InvokeStore(this._settings.apduTimeout)
+		this._requestManager = new RequestManager(this._settings.apduTimeout)
 
 		options.reuseAddr =
 			options.reuseAddr === undefined ? true : !!options.reuseAddr
@@ -252,7 +250,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 	) {
 		const result = ErrorService.decode(buffer, offset)
 		if (!result) return debug('Couldn`t decode Error')
-		this._invokeStore.resolve(
+		this._requestManager.resolve(
 			invokeId,
 			new Error(
 				`BacnetError - Class:${result.class} - Code:${result.code}`,
@@ -261,7 +259,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 	}
 
 	private _processAbort(invokeId: number, reason: number) {
-		this._invokeStore.resolve(
+		this._requestManager.resolve(
 			invokeId,
 			new Error(`BacnetAbort - Reason:${reason}`),
 		)
@@ -555,7 +553,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 					HasInvokeId
 				offset += msg.len
 				length -= msg.len
-				this._invokeStore.resolve((msg as HasInvokeId).invokeId, null, {
+				this._requestManager.resolve((msg as HasInvokeId).invokeId, null, {
 					msg,
 					buffer,
 					offset: offset + msg.len,
@@ -570,7 +568,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 				) as ComplexAckMessage
 				msg.header = header
 				if ((header.apduType & PduConReqBit.SEGMENTED_MESSAGE) === 0) {
-					this._invokeStore.resolve(
+					this._requestManager.resolve(
 						(msg as HasInvokeId).invokeId,
 						null,
 						{
@@ -950,7 +948,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		)
 		this.sendBvlc(receiver, buffer)
 
-		const data = await this._invokeStore.add(settings.invokeId)
+		const data = await this._requestManager.add(settings.invokeId)
 
 		const result = ReadProperty.decodeAcknowledge(
 			data.buffer,
@@ -1023,7 +1021,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		)
 		this.sendBvlc(receiver, buffer)
 
-		await this._invokeStore.add(settings.invokeId)
+		await this._requestManager.add(settings.invokeId)
 	}
 
 	/**
@@ -1071,7 +1069,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		)
 		ReadPropertyMultiple.encode(buffer, propertiesArray)
 		this.sendBvlc(receiver, buffer)
-		const data = await this._invokeStore.add(settings.invokeId)
+		const data = await this._requestManager.add(settings.invokeId)
 		const result = ReadPropertyMultiple.decodeAcknowledge(
 			data.buffer,
 			data.offset,
@@ -1117,7 +1115,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		)
 		WritePropertyMultiple.encodeObject(buffer, values)
 		this.sendBvlc(receiver, buffer)
-		await this._invokeStore.add(settings.invokeId)
+		await this._requestManager.add(settings.invokeId)
 	}
 
 	/**
@@ -1176,7 +1174,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 			buffer.offset,
 		)
 		this.sendBvlc(receiver, buffer)
-		await this._invokeStore.add(settings.invokeId)
+		await this._requestManager.add(settings.invokeId)
 	}
 
 	/**
@@ -1223,7 +1221,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 			settings.password,
 		)
 		this.sendBvlc(receiver, buffer)
-		await this._invokeStore.add(settings.invokeId)
+		await this._requestManager.add(settings.invokeId)
 	}
 
 	/**
@@ -1264,7 +1262,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		)
 		ReinitializeDevice.encode(buffer, state, settings.password)
 		this.sendBvlc(receiver, buffer)
-		await this._invokeStore.add(settings.invokeId)
+		await this._requestManager.add(settings.invokeId)
 	}
 
 	/**
@@ -1306,7 +1304,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		const blocks: number[][] = fileBuffer
 		AtomicWriteFile.encode(buffer, false, objectId, position, blocks)
 		this.sendBvlc(receiver, buffer)
-		const data = await this._invokeStore.add(settings.invokeId)
+		const data = await this._requestManager.add(settings.invokeId)
 		const result = AtomicWriteFile.decodeAcknowledge(
 			data.buffer,
 			data.offset,
@@ -1355,7 +1353,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		)
 		AtomicReadFile.encode(buffer, true, objectId, position, count)
 		this.sendBvlc(receiver, buffer)
-		const data = await this._invokeStore.add(settings.invokeId)
+		const data = await this._requestManager.add(settings.invokeId)
 		const result = AtomicReadFile.decodeAcknowledge(
 			data.buffer,
 			data.offset,
@@ -1413,7 +1411,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 			quantity,
 		)
 		this.sendBvlc(receiver, buffer)
-		const data = await this._invokeStore.add(settings.invokeId)
+		const data = await this._requestManager.add(settings.invokeId)
 		const result = ReadRange.decodeAcknowledge(
 			data.buffer,
 			data.offset,
@@ -1467,7 +1465,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 			lifetime,
 		)
 		this.sendBvlc(receiver, buffer)
-		await this._invokeStore.add(settings.invokeId)
+		await this._requestManager.add(settings.invokeId)
 	}
 
 	/**
@@ -1515,7 +1513,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 			0x0f,
 		)
 		this.sendBvlc(receiver, buffer)
-		await this._invokeStore.add(settings.invokeId)
+		await this._requestManager.add(settings.invokeId)
 	}
 
 	/**
@@ -1596,7 +1594,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		)
 		CreateObject.encode(buffer, objectId, values)
 		this.sendBvlc(receiver, buffer)
-		await this._invokeStore.add(settings.invokeId)
+		await this._requestManager.add(settings.invokeId)
 	}
 
 	/**
@@ -1630,7 +1628,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		)
 		DeleteObject.encode(buffer, objectId)
 		this.sendBvlc(receiver, buffer)
-		await this._invokeStore.add(settings.invokeId)
+		await this._requestManager.add(settings.invokeId)
 	}
 
 	/**
@@ -1675,7 +1673,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 			values,
 		)
 		this.sendBvlc(receiver, buffer)
-		await this._invokeStore.add(settings.invokeId)
+		await this._requestManager.add(settings.invokeId)
 	}
 
 	/**
@@ -1720,7 +1718,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 			values,
 		)
 		this.sendBvlc(receiver, buffer)
-		await this._invokeStore.add(settings.invokeId)
+		await this._requestManager.add(settings.invokeId)
 	}
 
 	/**
@@ -1757,7 +1755,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 			0,
 		)
 		this.sendBvlc(receiver, buffer)
-		const data = await this._invokeStore.add(settings.invokeId)
+		const data = await this._requestManager.add(settings.invokeId)
 		const result = AlarmSummary.decode(
 			data.buffer,
 			data.offset,
@@ -1810,7 +1808,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 			objectId.instance,
 		)
 		this.sendBvlc(receiver, buffer)
-		const data = await this._invokeStore.add(settings.invokeId)
+		const data = await this._requestManager.add(settings.invokeId)
 		const result = EventInformation.decode(
 			data.buffer,
 			data.offset,
@@ -1870,7 +1868,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 			ackTimeStamp,
 		)
 		this.sendBvlc(receiver, buffer)
-		await this._invokeStore.add(settings.invokeId)
+		await this._requestManager.add(settings.invokeId)
 	}
 
 	/**
@@ -1911,7 +1909,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		)
 		PrivateTransfer.encode(buffer, vendorId, serviceNumber, data)
 		this.sendBvlc(receiver, buffer)
-		await this._invokeStore.add(settings.invokeId)
+		await this._requestManager.add(settings.invokeId)
 	}
 
 	/**
@@ -1973,7 +1971,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 			options.notificationClassFilter,
 		)
 		this.sendBvlc(receiver, buffer)
-		const data = await this._invokeStore.add(settings.invokeId)
+		const data = await this._requestManager.add(settings.invokeId)
 		const result = GetEnrollmentSummary.decodeAcknowledge(
 			data.buffer,
 			data.offset,
@@ -2039,7 +2037,7 @@ export default class BACnetClient extends TypedEventEmitter<BACnetClientEvents> 
 		)
 		EventNotifyData.encode(buffer, eventNotification)
 		this.sendBvlc(receiver, buffer)
-		await this._invokeStore.add(settings.invokeId)
+		await this._requestManager.add(settings.invokeId)
 	}
 
 	/**

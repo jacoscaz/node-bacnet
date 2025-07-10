@@ -3,10 +3,10 @@ import debugLib from 'debug'
 import { type NetworkOpResult } from './types'
 import { Deferred } from './utils'
 
-const debug = debugLib('bacnet:client:debug')
-const trace = debugLib('bacnet:client:trace')
+const debug = debugLib('bacnet:client:requestmanager:debug')
+const trace = debugLib('bacnet:client:requestmanager:trace')
 
-export class InvokeStore {
+export class RequestManager {
 	#entries: Map<
 		number,
 		{ deferred: Deferred<NetworkOpResult>; createdAt: number }
