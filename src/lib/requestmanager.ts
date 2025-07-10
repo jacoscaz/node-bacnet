@@ -81,7 +81,7 @@ export class RequestManager {
 		})
 		debug(`Cleared ${qty - this.#entries.size} entries.`)
 		debug(`There are ${this.#entries.size} entries pending.`)
-		if (this.#entries.size > 0) {
+		if (!force && this.#entries.size > 0) {
 			this.#scheduleClear()
 		}
 	}
