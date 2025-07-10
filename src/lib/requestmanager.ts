@@ -72,12 +72,15 @@ export class RequestManager {
 			this.#clearTimeout = null
 		}
 		const now = Date.now()
+		const qty = this.#entries.size
 		this.#entries.forEach(({ deferred, createdAt }, id) => {
 			if (force || now - createdAt > this.#timeout) {
 				deferred.reject(new Error('ERR_TIMEOUT'))
 				this.#entries.delete(id)
 			}
 		})
+		debug(`Cleared ${qty - this.#entries.size} entries.`)
+		debug(`There are ${this.#entries.size} entries pending.`)
 		if (this.#entries.size > 0) {
 			this.#scheduleClear()
 		}
