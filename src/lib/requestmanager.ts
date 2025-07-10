@@ -66,8 +66,11 @@ export class RequestManager {
 		}
 	}
 
-	#clear = () => {
-		this.#clearTimeout = null
+	clear = () => {
+		if (this.#clearTimeout !== null) {
+			clearTimeout(this.#clearTimeout)
+			this.#clearTimeout = null
+		}
 		const now = Date.now()
 		this.#entries.forEach(({ deferred, createdAt }, id) => {
 			if (now - createdAt > this.#timeout) {
@@ -82,7 +85,7 @@ export class RequestManager {
 
 	#scheduleClear() {
 		if (this.#clearTimeout === null) {
-			this.#clearTimeout = setTimeout(this.#clear, this.#timeout)
+			this.#clearTimeout = setTimeout(this.clear, this.#timeout)
 		}
 	}
 }
