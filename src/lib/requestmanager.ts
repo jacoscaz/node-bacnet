@@ -1,10 +1,21 @@
 import debugLib from 'debug'
 
 import { type NetworkOpResult } from './types'
-import { Deferred } from './utils'
 
 const debug = debugLib('bacnet:client:requestmanager:debug')
 const trace = debugLib('bacnet:client:requestmanager:trace')
+
+class Deferred<T> {
+	resolve!: (value: T) => void
+	reject!: (err: Error) => void
+	promise: Promise<T>
+	constructor() {
+		this.promise = new Promise((resolve, reject) => {
+			this.resolve = resolve
+			this.reject = reject
+		})
+	}
+}
 
 export class RequestManager {
 	#entries: Map<
