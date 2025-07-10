@@ -127,7 +127,9 @@ export class RequestManager {
 			// setTimeout() effectively becomes like setImmediate() if the delay value is 0 or negative
 			this.#clearTimeout = setTimeout(
 				this.clear,
-				this.#requestsByTime[0].expiresAt - Date.now() + 10,
+				// We add 100 milliseconds to ensure that we can never schedule more than
+				// 10 timeouts per second even in worst-case bursts scenarios
+				this.#requestsByTime[0].expiresAt - Date.now() + 100,
 			)
 		}
 	}
