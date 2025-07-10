@@ -33,7 +33,7 @@ interface RequestEntry {
  */
 export class RequestManager {
 	/** Index of pending requests by invokeId */
-	requestsById: Map<number, RequestEntry>
+	#requestsById: Map<number, RequestEntry>
 
 	/** Array of requests ordered by creation time */
 	#requestsByTime: RequestEntry[]
@@ -42,7 +42,7 @@ export class RequestManager {
 	#clearTimeout: NodeJS.Timeout | null
 
 	constructor(timeout: number) {
-		this.requestsById = new Map()
+		this.#requestsById = new Map()
 		this.#requestsByTime = []
 		this.#timeout = timeout
 		this.#clearTimeout = null
@@ -55,7 +55,7 @@ export class RequestManager {
 			deferred,
 			expiresAt: Date.now() + this.#timeout,
 		}
-		this.requestsById.set(invokeId, request)
+		this.#requestsById.set(invokeId, request)
 		this.#requestsByTime.push(request)
 		this.#scheduleClear()
 		trace(
@@ -63,7 +63,7 @@ export class RequestManager {
 		)
 		return deferred.promise.finally(() => {
 			debug(`InvokeId ${invokeId} deferred called`)
-			this.requestsById.delete(invokeId)
+			this.#requestsById.delete(invokeId)
 		})
 	}
 
@@ -74,10 +74,10 @@ export class RequestManager {
 		err: Error | null | undefined,
 		result?: NetworkOpResult,
 	) {
-		const request = this.requestsById.get(id)
+		const request = this.#requestsById.get(id)
 		if (request) {
 			trace(`InvokeId ${id} found -> call callback`)
-			this.requestsById.delete(id)
+			this.#requestsById.delete(id)
 			if (err) {
 				request.deferred.reject(err)
 			} else {
@@ -85,7 +85,7 @@ export class RequestManager {
 			}
 		} else {
 			debug('InvokeId', id, 'not found -> drop package')
-			trace(`Stored invokeId: ${Array.from(this.requestsById.keys())}`)
+			trace(`Stored invokeId: ${Array.from(this.#requestsById.keys())}`)
 		}
 	}
 
@@ -98,22 +98,22 @@ export class RequestManager {
 		const qty = this.#requestsByTime.length
 		// filter() is usually faster than splice() for small-ish arrays
 		this.#requestsByTime = this.#requestsByTime.filter((request) => {
-			if (!this.requestsById.has(request.invokeId)) {
+			if (!this.#requestsById.has(request.invokeId)) {
 				// Request has already been resolved or expired
 				return false
 			}
 			if (force || request.expiresAt <= now) {
 				// Request has timed out or we forcefully time it out
 				request.deferred.reject(new Error('ERR_TIMEOUT'))
-				this.requestsById.delete(request.invokeId)
+				this.#requestsById.delete(request.invokeId)
 				return false
 			}
 			// Request is still pending
 			return true
 		})
 		assert(
-			this.requestsById.size === this.#requestsByTime.length,
-			`Index size mismatch  ${this.requestsById.size} !== ${this.#requestsByTime.length}`,
+			this.#requestsById.size === this.#requestsByTime.length,
+			`Index size mismatch  ${this.#requestsById.size} !== ${this.#requestsByTime.length}`,
 		)
 		debug(`Cleared ${qty - this.#requestsByTime.length} entries.`)
 		debug(`There are ${this.#requestsByTime.length} entries pending.`)
