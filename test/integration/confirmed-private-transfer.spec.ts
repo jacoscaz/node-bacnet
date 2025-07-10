@@ -7,7 +7,7 @@ test.describe('bacnet - confirmedPrivateTransfer integration', () => {
 	test('should return a timeout error if no device is available', async (t) => {
 		const client = new utils.BacnetClient({ apduTimeout: 200 })
     try {
-      client.confirmedPrivateTransfer(
+      await client.confirmedPrivateTransfer(
         { address: '127.0.0.2' },
         0,
         8,

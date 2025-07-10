@@ -14,7 +14,7 @@ test.describe('bacnet - readPropertyMultiple integration', () => {
 			},
 		]
     try {
-      client.readPropertyMultiple(
+      await client.readPropertyMultiple(
         { address: '127.0.0.2' },
         requestArray,
         {},
