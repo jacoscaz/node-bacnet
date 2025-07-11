@@ -38,10 +38,10 @@ export class RequestManager {
 	#requestsByTime: RequestEntry[]
 
 	/** Minimum time to wait between scheduled clearings of pending requests */
-	#clearTimeoutDelay: number
+	#delay: number
 
 	/** Id of the timeout for the next scheduled clearing of pending requests */
-	#clearTimeoutId: NodeJS.Timeout | null
+	#activeTimeout: NodeJS.Timeout | null
 
 	/**
 	 * Local implementation of the global setTimeout function. This can be set
@@ -50,14 +50,11 @@ export class RequestManager {
 	 */
 	#setTimeout: typeof setTimeout
 
-	constructor(
-		timeoutDelay: number,
-		_setTimeout: typeof setTimeout = setTimeout,
-	) {
+	constructor(delay: number, _setTimeout: typeof setTimeout = setTimeout) {
 		this.#requestsById = new Map()
 		this.#requestsByTime = []
-		this.#clearTimeoutDelay = timeoutDelay
-		this.#clearTimeoutId = null
+		this.#delay = delay
+		this.#activeTimeout = null
 		this.#setTimeout = _setTimeout
 	}
 
@@ -66,13 +63,13 @@ export class RequestManager {
 		const request = {
 			invokeId,
 			deferred,
-			expiresAt: Date.now() + this.#clearTimeoutDelay,
+			expiresAt: Date.now() + this.#delay,
 		}
 		this.#requestsById.set(invokeId, request)
 		this.#requestsByTime.push(request)
 		this.#scheduleClear()
 		trace(
-			`InvokeId ${invokeId} callback added -> timeout set to ${this.#clearTimeoutDelay}.`,
+			`InvokeId ${invokeId} callback added -> timeout set to ${this.#delay}.`,
 		)
 		return deferred.promise
 	}
@@ -105,9 +102,9 @@ export class RequestManager {
 	}
 
 	clear = (force?: boolean) => {
-		if (this.#clearTimeoutId !== null) {
-			clearTimeout(this.#clearTimeoutId)
-			this.#clearTimeoutId = null
+		if (this.#activeTimeout !== null) {
+			clearTimeout(this.#activeTimeout)
+			this.#activeTimeout = null
 		}
 		const now = Date.now()
 		const qty = this.#requestsByTime.length
@@ -134,7 +131,7 @@ export class RequestManager {
 	}
 
 	#scheduleClear() {
-		if (this.#clearTimeoutId === null && this.#requestsByTime.length > 0) {
+		if (this.#activeTimeout === null && this.#requestsByTime.length > 0) {
 			// We schedule the timeout with a minimum delay of 100ms to ensure that
 			// we can't saturate the event loop with more than 10 timeouts per second
 			// even in a worst case scenario
@@ -145,7 +142,7 @@ export class RequestManager {
 			trace(
 				`Scheduling timeout for clearing pending request in ${delay}ms`,
 			)
-			this.#clearTimeoutId = this.#setTimeout(this.clear, delay)
+			this.#activeTimeout = this.#setTimeout(this.clear, delay)
 		}
 	}
 }
