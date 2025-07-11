@@ -41,11 +41,14 @@ export class RequestManager {
 	#timeout: number
 	#clearTimeout: NodeJS.Timeout | null
 
-	constructor(timeout: number) {
+	#setTimeout: typeof setTimeout
+
+	constructor(timeout: number, _setTimeout: typeof setTimeout = setTimeout) {
 		this.#requestsById = new Map()
 		this.#requestsByTime = []
 		this.#timeout = timeout
 		this.#clearTimeout = null
+		this.#setTimeout = _setTimeout
 	}
 
 	add(invokeId: number): Promise<NetworkOpResult> {
@@ -61,31 +64,34 @@ export class RequestManager {
 		trace(
 			`InvokeId ${invokeId} callback added -> timeout set to ${this.#timeout}.`, // Stack: ${new Error().stack}`,
 		)
-		return deferred.promise.finally(() => {
-			debug(`InvokeId ${invokeId} deferred called`)
-			this.#requestsById.delete(invokeId)
-		})
+		return deferred.promise
 	}
 
-	resolve(id: number, err: Error, result?: undefined): void
-	resolve(id: number, err: null | undefined, result: NetworkOpResult): void
+	resolve(invokeId: number, err: Error, result?: undefined): boolean
 	resolve(
-		id: number,
+		invokeId: number,
+		err: null | undefined,
+		result: NetworkOpResult,
+	): boolean
+	resolve(
+		invokeId: number,
 		err: Error | null | undefined,
 		result?: NetworkOpResult,
-	) {
-		const request = this.#requestsById.get(id)
+	): boolean {
+		const request = this.#requestsById.get(invokeId)
 		if (request) {
-			trace(`InvokeId ${id} found -> call callback`)
+			trace(`InvokeId ${invokeId} found -> call callback`)
+			this.#requestsById.delete(invokeId)
 			if (err) {
 				request.deferred.reject(err)
 			} else {
 				request.deferred.resolve(result)
 			}
-		} else {
-			debug('InvokeId', id, 'not found -> drop package')
-			trace(`Stored invokeId: ${Array.from(this.#requestsById.keys())}`)
+			return true
 		}
+		debug('InvokeId', invokeId, 'not found -> drop package')
+		trace(`Stored invokeId: ${Array.from(this.#requestsById.keys())}`)
+		return false
 	}
 
 	clear = (force?: boolean) => {
@@ -133,7 +139,7 @@ export class RequestManager {
 			trace(
 				`Scheduling timeout for clearing pending request in ${delay}ms`,
 			)
-			this.#clearTimeout = setTimeout(this.clear, delay)
+			this.#clearTimeout = this.#setTimeout(this.clear, delay)
 		}
 	}
 }
