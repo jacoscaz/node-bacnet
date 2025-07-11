@@ -123,13 +123,17 @@ export class RequestManager {
 
 	#scheduleClear() {
 		if (this.#clearTimeout === null && this.#requestsByTime.length > 0) {
-			// setTimeout() effectively becomes like setImmediate() if the delay value is 0 or negative
-			this.#clearTimeout = setTimeout(
-				this.clear,
-				// We add 100 milliseconds to ensure that we can never schedule more than
-				// 10 timeouts per second even in worst-case bursts scenarios
-				this.#requestsByTime[0].expiresAt - Date.now() + 100,
+			// We schedule the timeout with a minimum delay of 100ms to ensure that
+			// we can't saturate the event loop with more than 10 timeouts per second
+			// even in a worst case scenario
+			const delay = Math.max(
+				this.#requestsByTime[0].expiresAt - Date.now(),
+				100,
 			)
+			trace(
+				`Scheduling timeout for clearing pending request in ${delay}ms`,
+			)
+			this.#clearTimeout = setTimeout(this.clear, delay)
 		}
 	}
 }
