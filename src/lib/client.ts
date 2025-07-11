@@ -111,7 +111,7 @@ import {
 	PropertyIdentifier,
 	ReadRangeType,
 } from './enum'
-import { RequestManager } from './requestmanager'
+import { RequestManager } from './request-manager'
 
 import { Buffer } from 'buffer'
 import { buffer } from 'stream/consumers'

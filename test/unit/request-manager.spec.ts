@@ -9,7 +9,7 @@ import {
 } from 'node:test'
 import assert from 'node:assert'
 
-import { RequestManager } from '../../src/lib/requestmanager'
+import { RequestManager } from '../../src/lib/request-manager'
 import { NetworkOpResult } from '../../src'
 import { setTimeout } from 'node:timers'
 
