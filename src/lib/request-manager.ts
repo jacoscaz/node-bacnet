@@ -1,4 +1,3 @@
-import assert from 'node:assert'
 import debugLib from 'debug'
 
 import { type NetworkOpResult } from './types'
@@ -73,7 +72,7 @@ export class RequestManager {
 		this.#requestsByTime.push(request)
 		this.#scheduleClear()
 		trace(
-			`InvokeId ${invokeId} callback added -> timeout set to ${this.#clearTimeoutDelay}.`, // Stack: ${new Error().stack}`,
+			`InvokeId ${invokeId} callback added -> timeout set to ${this.#clearTimeoutDelay}.`,
 		)
 		return deferred.promise
 	}
