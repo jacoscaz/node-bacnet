@@ -14,7 +14,6 @@ import { NetworkOpResult } from '../../src'
 import { setTimeout } from 'node:timers'
 
 test.describe('RequestManager', () => {
-
 	const wait = (millis: number): Promise<void> => {
 		return new Promise((resolve) => {
 			setTimeout(resolve, millis)
@@ -83,7 +82,7 @@ test.describe('RequestManager', () => {
 		assert.strictEqual(manager.resolve(42, undefined, result), true)
 		assert.strictEqual(manager.resolve(42, undefined, result), false)
 	})
-	
+
 	test('add() should return a promise that cannot be resolved after the request has timed out', async () => {
 		manager.add(42)
 		await wait(delay * 1.1)
