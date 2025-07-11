@@ -40,6 +40,10 @@ test.describe('RequestManager', () => {
 		manager = new RequestManager(delay, mockSetTimeout)
 	})
 
+	afterEach(() => {
+		manager.clear(true)
+	})
+
 	test('add() should return a promise that resolves if resolve() is called before the timeout with no error', async () => {
 		queueMicrotask(() => {
 			manager.resolve(42, undefined, result)
@@ -115,10 +119,10 @@ test.describe('RequestManager', () => {
 	test('multiple invocations of add() separated by more than the timeout delay should result in multiple invocations of setTimeout()', async (t) => {
 		manager.add(42).catch(() => {}) // ignore timeouts
 		assert.strictEqual(mockSetTimeout.mock.callCount(), 1)
-		await wait(delay * 0.9)
+		await wait(delay * 1.1)
 		manager.add(43).catch(() => {}) // ignore timeouts
 		assert.strictEqual(mockSetTimeout.mock.callCount(), 2)
-		await wait(delay * 0.9)
+		await wait(delay * 1.1)
 		manager.add(44).catch(() => {}) // ignore timeouts
 		assert.strictEqual(mockSetTimeout.mock.callCount(), 3)
 	})
