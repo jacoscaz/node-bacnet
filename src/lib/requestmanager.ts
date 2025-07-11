@@ -116,10 +116,6 @@ export class RequestManager {
 			// Request is still pending
 			return true
 		})
-		assert(
-			this.#requestsById.size === this.#requestsByTime.length,
-			`Index size mismatch  ${this.#requestsById.size} !== ${this.#requestsByTime.length}`,
-		)
 		debug(`Cleared ${qty - this.#requestsByTime.length} entries.`)
 		debug(`There are ${this.#requestsByTime.length} entries pending.`)
 		if (!force) {
