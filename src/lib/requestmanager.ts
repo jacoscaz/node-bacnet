@@ -77,7 +77,6 @@ export class RequestManager {
 		const request = this.#requestsById.get(id)
 		if (request) {
 			trace(`InvokeId ${id} found -> call callback`)
-			this.#requestsById.delete(id)
 			if (err) {
 				request.deferred.reject(err)
 			} else {
